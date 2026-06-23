@@ -141,10 +141,10 @@ export const HeroAnd = styled.p`
 
 export const HeroNameBride = styled.h1`
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(52px, 16vw, 72px);
+  font-size: clamp(36px, 11.5vw, 58px);
   font-weight: 400;
   color: ${C.black};
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   line-height: 1;
   margin-bottom: 32px;
 `;
@@ -371,9 +371,8 @@ export const GalleryMoreLabel = styled.span`
 // ─── Gallery Video ────────────────────────────────────────
 export const GalleryVideoWrap = styled.div`
   width: 100%;
-  margin-top: 2px;
+  margin-top: 48px;
   position: relative;
-  background: #1a1a1a;
   overflow: hidden;
 `;
 
@@ -384,7 +383,7 @@ export const GalleryVideoLabel = styled.p`
   color: ${C.creamMuted};
   text-transform: uppercase;
   text-align: center;
-  padding: 20px 0 14px;
+  padding: 0 0 16px;
 `;
 
 // ─── Lightbox ─────────────────────────────────────────────
@@ -406,8 +405,13 @@ export const LightboxImg = styled.img`
   max-height: 100vh;
   object-fit: contain;
   display: block;
-  pointer-events: none;
   user-select: none;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50% + ${({ $offset }) => $offset ?? 0}px), -50%);
+  transition: ${({ $sliding }) => $sliding ? 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none'};
 `;
 
 export const LightboxClose = styled.button`

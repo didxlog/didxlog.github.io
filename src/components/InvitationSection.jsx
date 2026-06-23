@@ -8,8 +8,8 @@ export function JoinUsSection() {
   return (
     <Section id="join">
       <JoinUsTitle>Join us<br />for our wedding</JoinUsTitle>
-      <FamilyRow>이호승 · 손서교 의 아들 <strong>이현우</strong></FamilyRow>
-      <FamilyRow>손무성 · 곽정애 의 &nbsp;&nbsp;&nbsp;딸 <strong>손지수</strong></FamilyRow>
+      <FamilyRow>이호승 · 손서교 의 아들 <strong>&nbsp;&nbsp;이현우</strong></FamilyRow>
+      <FamilyRow>손무성 · 곽정애 의 &nbsp;&nbsp;&nbsp;&nbsp;딸 <strong>&nbsp;&nbsp;손지수</strong></FamilyRow>
     </Section>
   );
 }
