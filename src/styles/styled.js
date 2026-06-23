@@ -6,7 +6,7 @@ export const PageWrapper = styled.div`
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  background: ${C.orange};
+  background: ${C.navy};
   min-height: 100vh;
   font-family: 'Noto Serif KR', serif;
 `;
@@ -24,14 +24,14 @@ export const Nav = styled.nav`
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  background: ${C.orange};
+  background: ${C.navy};
 `;
 
 export const NavTitle = styled.span`
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 13px;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
   font-style: italic;
-  color: ${C.cream};
+  color: ${C.white};
   letter-spacing: 0.03em;
 `;
 
@@ -47,7 +47,7 @@ export const MenuButton = styled.button`
     display: block;
     width: 22px;
     height: 1.5px;
-    background: ${C.cream};
+    background: ${C.white};
   }
 `;
 
@@ -60,7 +60,7 @@ export const MenuOverlay = styled.div`
   width: 100%;
   max-width: 480px;
   height: 100vh;
-  background: ${C.orangeDark};
+  background: ${C.navyDark};
   z-index: 200;
   display: flex;
   flex-direction: column;
@@ -79,8 +79,8 @@ export const MenuClose = styled.button`
   border: none;
   cursor: pointer;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
-  color: ${C.cream};
+  font-size: 30px;
+  color: ${C.white};
   line-height: 1;
 `;
 
@@ -89,21 +89,21 @@ export const MenuItemBtn = styled.button`
   border: none;
   cursor: pointer;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
+  font-size: 32px;
   font-style: italic;
   font-weight: 300;
-  color: ${C.cream};
+  color: ${C.white};
   letter-spacing: 0.08em;
   margin: 14px 0;
   display: block;
   transition: color 0.2s;
-  &:hover { color: ${C.creamMuted}; }
+  &:hover { color: ${C.whiteMuted}; }
 `;
 
 // ─── Hero ─────────────────────────────────────────────────
 export const HeroSection = styled.section`
   padding-top: 72px;
-  background: ${C.orange};
+  background: ${C.navy};
 `;
 
 export const HeroTop = styled.div`
@@ -115,59 +115,59 @@ export const HeroTop = styled.div`
 export const YoureInvited = styled.p`
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
-  font-size: 15px;
-  color: rgba(245,239,230,0.55);
-  letter-spacing: 0.06em;
+  font-size: 16px;
+  color: rgba(247,245,242,0.45);
+  letter-spacing: 0.08em;
   margin-bottom: 20px;
 `;
 
 export const HeroNameGroom = styled.h1`
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(36px, 11.5vw, 58px);
-  font-weight: 400;
-  color: ${C.black};
-  letter-spacing: 0.06em;
+  font-size: clamp(40px, 12.5vw, 64px);
+  font-weight: 300;
+  color: ${C.white};
+  letter-spacing: 0.04em;
   line-height: 1;
 `;
 
 export const HeroAnd = styled.p`
   font-family: 'Cormorant Garamond', serif;
-  font-size: 32px;
+  font-size: 34px;
   font-style: italic;
   font-weight: 300;
-  color: ${C.cream};
-  margin: 12px 0;
+  color: ${C.whiteMuted};
+  margin: 14px 0;
 `;
 
 export const HeroNameBride = styled.h1`
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(36px, 11.5vw, 58px);
-  font-weight: 400;
-  color: ${C.black};
-  letter-spacing: 0.06em;
+  font-size: clamp(40px, 12.5vw, 64px);
+  font-weight: 300;
+  color: ${C.white};
+  letter-spacing: 0.04em;
   line-height: 1;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
 `;
 
 export const HeroDate = styled.p`
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 16px;
-  color: ${C.cream};
-  letter-spacing: 0.05em;
-  margin-bottom: 6px;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: ${C.white};
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
 `;
 
 export const HeroVenue = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 15px;
-  color: ${C.creamMuted};
+  font-size: 16px;
+  color: ${C.whiteMuted};
   letter-spacing: 0.08em;
 `;
 
 export const HeroPhoto = styled.div`
   width: 100%;
   aspect-ratio: 3/4;
-  background: #2A2A2A;
+  background: #0a1520;
   overflow: hidden;
   position: relative;
   min-height: 360px;
@@ -175,7 +175,7 @@ export const HeroPhoto = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(100%);
+    filter: grayscale(20%) brightness(0.88);
     display: block;
     pointer-events: none;
     user-select: none;
@@ -186,11 +186,11 @@ export const PhotoPlaceholder = styled.div`
   width: 100%;
   height: 100%;
   min-height: 360px;
-  background: linear-gradient(160deg, #333 0%, #1a1a1a 100%);
+  background: linear-gradient(160deg, #1a2a3a 0%, #0a1520 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255,255,255,0.2);
+  color: rgba(247,245,242,0.15);
   font-family: 'Cormorant Garamond', serif;
   font-size: 14px;
   letter-spacing: 0.2em;
@@ -198,16 +198,16 @@ export const PhotoPlaceholder = styled.div`
 
 // ─── Common Section ───────────────────────────────────────
 export const Section = styled.section`
-  background: ${C.orange};
+  background: ${C.navy};
   padding: 80px 28px;
   text-align: center;
 `;
 
 export const SectionLabel = styled.p`
   font-family: 'Cormorant Garamond', serif;
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  color: ${C.creamMuted};
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  color: ${C.whiteMuted};
   text-transform: uppercase;
   margin-bottom: 40px;
 `;
@@ -222,29 +222,29 @@ export const Divider = styled.hr`
 export const ThinLine = styled.div`
   width: 36px;
   height: 1px;
-  background: ${C.creamMuted};
+  background: ${C.whiteMuted};
   margin: 0 auto 40px;
 `;
 
 // ─── Join Us ──────────────────────────────────────────────
 export const JoinUsTitle = styled.h2`
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(36px, 10vw, 48px);
+  font-size: clamp(38px, 11vw, 52px);
   font-style: italic;
   font-weight: 300;
-  color: ${C.cream};
+  color: ${C.white};
   line-height: 1.3;
   margin-bottom: 60px;
 `;
 
 export const FamilyRow = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 15px;
-  color: ${C.creamMuted};
+  font-size: 16px;
+  color: ${C.whiteMuted};
   line-height: 2.4;
   letter-spacing: 0.02em;
   strong {
-    color: ${C.cream};
+    color: ${C.white};
     font-weight: 600;
   }
 `;
@@ -252,27 +252,27 @@ export const FamilyRow = styled.p`
 // ─── Invitation ───────────────────────────────────────────
 export const InvitationText = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 15.5px;
-  color: ${C.cream};
-  line-height: 2.2;
+  font-size: 17px;
+  color: ${C.white};
+  line-height: 2.4;
   letter-spacing: 0.04em;
   word-break: keep-all;
 `;
 
 // ─── Calendar ─────────────────────────────────────────────
 export const CalDateLarge = styled.h2`
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(36px, 11vw, 52px);
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 9vw, 42px);
   font-weight: 300;
-  color: ${C.cream};
-  letter-spacing: 0.02em;
-  margin-bottom: 8px;
+  color: ${C.white};
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
 `;
 
 export const CalTimeSub = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 16px;
-  color: ${C.creamMuted};
+  font-size: 17px;
+  color: ${C.whiteMuted};
   letter-spacing: 0.1em;
   margin-bottom: 36px;
 `;
@@ -284,10 +284,10 @@ export const CalDayHeader = styled.div`
 `;
 
 export const CalDayLabel = styled.span`
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 13px;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
   letter-spacing: 0.05em;
-  color: ${({ $isSun }) => $isSun ? '#F0A88A' : C.creamMuted};
+  color: ${({ $isSun }) => $isSun ? '#7EB8D4' : C.whiteMuted};
   text-align: center;
 `;
 
@@ -298,27 +298,27 @@ export const CalRow = styled.div`
 `;
 
 export const CalCell = styled.div`
-  height: 44px;
+  height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 15px;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
   font-weight: ${({ $isSelected }) => $isSelected ? 500 : 300};
   color: ${({ $isSun, $isEmpty, $isSelected }) =>
     $isEmpty ? 'transparent' :
-    $isSelected ? C.orange :
-    $isSun ? '#F0A88A' : C.cream};
+    $isSelected ? C.navy :
+    $isSun ? '#7EB8D4' : C.white};
   position: relative;
 
   ${({ $isSelected }) => $isSelected && `
     &::before {
       content: '';
       position: absolute;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: #F5EFE6;
+      background: #F7F5F2;
       z-index: 0;
     }
   `}
@@ -331,18 +331,18 @@ export const GalleryGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
-  border: 2px solid ${C.orangeDark};
+  border: 2px solid ${C.navyDark};
 `;
 
 export const GalleryCell = styled.div`
   aspect-ratio: 1;
-  background: ${({ $isMore }) => $isMore ? C.gray : '#3D1A08'};
+  background: ${({ $isMore }) => $isMore ? C.gray : '#0a1520'};
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid ${C.orangeDark};
+  border: 1px solid ${C.navyDark};
   min-height: 80px;
 `;
 
@@ -350,21 +350,21 @@ export const GalleryPreviewText = styled.span`
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
   font-size: 13px;
-  color: rgba(245,239,230,0.25);
+  color: rgba(247,245,242,0.2);
 `;
 
 export const GalleryMoreNum = styled.span`
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Playfair Display', serif;
   font-size: 28px;
   font-weight: 300;
-  color: ${C.cream};
+  color: ${C.white};
 `;
 
 export const GalleryMoreLabel = styled.span`
   font-family: 'Cormorant Garamond', serif;
   font-size: 11px;
   letter-spacing: 0.25em;
-  color: ${C.cream};
+  color: ${C.white};
   margin-top: 4px;
 `;
 
@@ -378,9 +378,9 @@ export const GalleryVideoWrap = styled.div`
 
 export const GalleryVideoLabel = styled.p`
   font-family: 'Cormorant Garamond', serif;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.28em;
-  color: ${C.creamMuted};
+  color: ${C.whiteMuted};
   text-transform: uppercase;
   text-align: center;
   padding: 0 0 16px;
@@ -390,7 +390,7 @@ export const GalleryVideoLabel = styled.p`
 export const LightboxOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(26,10,5,0.95);
+  background: rgba(8,17,26,0.97);
   z-index: 500;
   display: flex;
   align-items: center;
@@ -423,7 +423,7 @@ export const LightboxClose = styled.button`
   cursor: pointer;
   font-family: 'Cormorant Garamond', serif;
   font-size: 32px;
-  color: ${C.cream};
+  color: ${C.white};
   line-height: 1;
   z-index: 501;
   padding: 4px 10px;
@@ -434,10 +434,10 @@ export const LightboxNav = styled.button`
   top: 50%;
   transform: translateY(-50%);
   ${({ $dir }) => $dir === 'prev' ? 'left: 16px;' : 'right: 16px;'}
-  background: rgba(245,239,230,0.12);
+  background: rgba(247,245,242,0.1);
   border: none;
   cursor: pointer;
-  color: ${C.cream};
+  color: ${C.white};
   font-size: 22px;
   width: 44px;
   height: 44px;
@@ -453,36 +453,36 @@ export const LightboxCounter = styled.p`
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 13px;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
   letter-spacing: 0.2em;
-  color: ${C.creamMuted};
+  color: ${C.whiteMuted};
   z-index: 501;
 `;
 
 // ─── Location ─────────────────────────────────────────────
 export const VenueName = styled.h3`
   font-family: 'Noto Serif KR', serif;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 500;
-  color: ${C.cream};
+  color: ${C.white};
   margin-bottom: 10px;
 `;
 
 export const VenueDetail = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 14px;
-  color: ${C.creamMuted};
+  font-size: 15px;
+  color: ${C.whiteMuted};
   line-height: 1.8;
   margin-bottom: 4px;
 `;
 
 export const VenuePhone = styled.a`
   font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  color: ${C.cream};
+  font-size: 20px;
+  color: ${C.white};
   text-decoration: underline;
-  text-decoration-color: ${C.creamMuted};
+  text-decoration-color: ${C.whiteMuted};
   letter-spacing: 0.04em;
   display: block;
   margin: 16px 0 28px;
@@ -505,7 +505,7 @@ export const MapLabel = styled.p`
   font-family: 'Cormorant Garamond', serif;
   font-size: 11px;
   letter-spacing: 0.22em;
-  color: ${C.creamMuted};
+  color: ${C.whiteMuted};
 `;
 
 export const MapButtonRow = styled.div`
@@ -517,24 +517,24 @@ export const MapButtonRow = styled.div`
 
 export const MapButton = styled.a`
   flex: 1;
-  padding: 13px 4px;
-  border: 1px solid ${C.creamMuted};
+  padding: 14px 4px;
+  border: 1px solid ${C.whiteMuted};
   border-radius: 100px;
   text-align: center;
   font-family: 'Noto Serif KR', serif;
-  font-size: 13px;
-  color: ${C.cream};
+  font-size: 14px;
+  color: ${C.white};
   text-decoration: none;
   cursor: pointer;
   transition: background 0.2s;
-  &:hover { background: rgba(245,239,230,0.1); }
+  &:hover { background: rgba(247,245,242,0.08); }
 `;
 
 export const TransportTitle = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  color: ${C.cream};
+  color: ${C.white};
   margin-bottom: 8px;
   margin-top: 20px;
   text-align: left;
@@ -542,8 +542,8 @@ export const TransportTitle = styled.p`
 
 export const TransportDesc = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 13px;
-  color: ${C.creamMuted};
+  font-size: 14px;
+  color: ${C.whiteMuted};
   line-height: 1.9;
   text-align: left;
 `;
@@ -551,8 +551,8 @@ export const TransportDesc = styled.p`
 // ─── Account ──────────────────────────────────────────────
 export const AccountSubtitle = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 16px;
-  color: ${C.cream};
+  font-size: 17px;
+  color: ${C.white};
   margin-bottom: 40px;
 `;
 
@@ -571,8 +571,8 @@ export const AccordionHeader = styled.button`
   border: none;
   cursor: pointer;
   font-family: 'Noto Serif KR', serif;
-  font-size: 16px;
-  color: ${C.cream};
+  font-size: 17px;
+  color: ${C.white};
   text-align: left;
 `;
 
@@ -581,7 +581,7 @@ export const AccordionArrow = styled.span`
   transition: transform 0.3s ease;
   transform: ${({ $isOpen }) => $isOpen ? 'rotate(0deg)' : 'rotate(180deg)'};
   font-size: 12px;
-  color: ${C.creamMuted};
+  color: ${C.whiteMuted};
 `;
 
 export const AccordionBody = styled.div`
@@ -592,8 +592,9 @@ export const AccordionBody = styled.div`
 `;
 
 export const AccountCard = styled.div`
-  background: rgba(0,0,0,0.15);
-  border-radius: 4px;
+  background: rgba(247,245,242,0.05);
+  border: 1px solid ${C.divider};
+  border-radius: 6px;
   padding: 16px;
   margin-bottom: 10px;
   display: flex;
@@ -604,9 +605,9 @@ export const AccountCard = styled.div`
 export const AccountTag = styled.span`
   display: inline-block;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.18em;
-  color: ${C.creamMuted};
+  color: ${C.whiteMuted};
   border: 1px solid ${C.divider};
   border-radius: 2px;
   padding: 2px 7px;
@@ -615,27 +616,27 @@ export const AccountTag = styled.span`
 
 export const AccountName = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 15px;
-  color: ${C.cream};
+  font-size: 16px;
+  color: ${C.white};
   margin-bottom: 4px;
 `;
 
 export const AccountNumber = styled.p`
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 14px;
-  color: ${C.creamMuted};
-  letter-spacing: 0.04em;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 16px;
+  color: ${C.whiteMuted};
+  letter-spacing: 0.06em;
 `;
 
 export const AccountBank = styled.span`
   text-decoration: underline;
-  text-decoration-color: ${C.creamMuted};
+  text-decoration-color: ${C.whiteMuted};
 `;
 
 export const CopyButton = styled.button`
   width: 40px;
   height: 40px;
-  border: 1px solid ${C.creamMuted};
+  border: 1px solid ${C.whiteMuted};
   border-radius: 4px;
   background: none;
   cursor: pointer;
@@ -645,15 +646,15 @@ export const CopyButton = styled.button`
   flex-shrink: 0;
   margin-left: 12px;
   transition: background 0.2s;
-  &:hover { background: rgba(245,239,230,0.1); }
-  svg { width: 18px; height: 18px; color: ${C.cream}; }
+  &:hover { background: rgba(247,245,242,0.08); }
+  svg { width: 18px; height: 18px; color: ${C.white}; }
 `;
 
 // ─── Share ────────────────────────────────────────────────
 export const ShareSubtitle = styled.p`
   font-family: 'Noto Serif KR', serif;
-  font-size: 15px;
-  color: ${C.creamMuted};
+  font-size: 16px;
+  color: ${C.whiteMuted};
   margin-bottom: 40px;
 `;
 
@@ -674,35 +675,35 @@ export const ShareCircle = styled.button`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: rgba(245,239,230,0.15);
+  background: rgba(247,245,242,0.1);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s;
-  &:hover { background: rgba(245,239,230,0.25); }
-  svg { width: 24px; height: 24px; color: ${C.cream}; }
+  &:hover { background: rgba(247,245,242,0.18); }
+  svg { width: 24px; height: 24px; color: ${C.white}; }
 `;
 
 export const ShareLabel = styled.p`
   font-family: 'Cormorant Garamond', serif;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.22em;
-  color: ${C.creamMuted};
+  color: ${C.whiteMuted};
 `;
 
 // ─── Footer ───────────────────────────────────────────────
 export const Footer = styled.footer`
-  background: ${C.orangeDark};
+  background: ${C.navyDark};
   padding: 40px 24px;
   text-align: center;
 `;
 
 export const FooterText = styled.p`
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 13px;
-  color: ${C.creamMuted};
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  color: ${C.whiteMuted};
   letter-spacing: 0.08em;
   font-style: italic;
   line-height: 1.8;
@@ -714,10 +715,10 @@ export const ToastWrap = styled.div`
   bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(26,10,5,0.92);
-  color: ${C.cream};
+  background: rgba(8,17,26,0.95);
+  color: ${C.white};
   font-family: 'Noto Serif KR', serif;
-  font-size: 13px;
+  font-size: 14px;
   padding: 12px 24px;
   border-radius: 100px;
   letter-spacing: 0.04em;
@@ -726,4 +727,5 @@ export const ToastWrap = styled.div`
   transition: opacity 0.3s ease;
   pointer-events: none;
   white-space: nowrap;
+  border: 1px solid ${C.divider};
 `;

@@ -20,10 +20,9 @@ export function InvitationSection() {
       <SectionLabel>Invitation</SectionLabel>
       <ThinLine />
       <InvitationText>
-        서로가 마주 보며 다져온 사랑을<br /><br />
-        이제 함께 한 곳을 바라보며 걸어가려 합니다.<br /><br />
-        저희 두 사람의 새로운 시작을<br /><br />
-        함께 축복해 주시면 더없는 기쁨으로 간직하겠습니다.
+        큰 보름달이 뜨는 날 결혼합니다.<br />
+        둥글게 살겠습니다.<br />
+        축하해주세요 !<br />
       </InvitationText>
     </Section>
   );
