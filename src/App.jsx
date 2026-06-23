@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Noto+Serif+KR:wght@300;400;500;600&display=swap');
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { background: #E8430D; font-family: 'Noto Serif KR', serif; overflow-x: hidden; }
+  body { background: #E8430D; overflow-x: hidden; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 `;
 
 const C = {
@@ -15,13 +19,8 @@ const C = {
   creamMuted: '#D9C4AE',
   black: '#1A0A05',
   divider: 'rgba(245,239,230,0.22)',
-  grayOverlay: '#5A5A5A',
+  gray: '#5A5A5A',
 };
-
-const fadeUp = keyframes`
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-`;
 
 const PageWrapper = styled.div`
   width: 100%;
@@ -29,6 +28,7 @@ const PageWrapper = styled.div`
   margin: 0 auto;
   background: ${C.orange};
   min-height: 100vh;
+  font-family: 'Noto Serif KR', serif;
 `;
 
 const Nav = styled.nav`
@@ -70,6 +70,55 @@ const MenuButton = styled.button`
   }
 `;
 
+/* ── $ 접두사 transient props 사용 ── */
+const MenuOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  background: ${C.orangeDark};
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: ${({ $isOpen }) => $isOpen ? 1 : 0};
+  pointer-events: ${({ $isOpen }) => $isOpen ? 'all' : 'none'};
+  transition: opacity 0.3s ease;
+`;
+
+const MenuClose = styled.button`
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  color: ${C.cream};
+  line-height: 1;
+`;
+
+const MenuItemBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 300;
+  color: ${C.cream};
+  letter-spacing: 0.08em;
+  margin: 14px 0;
+  display: block;
+  transition: color 0.2s;
+  &:hover { color: ${C.creamMuted}; }
+`;
+
 const HeroSection = styled.section`
   padding-top: 72px;
   background: ${C.orange};
@@ -78,7 +127,7 @@ const HeroSection = styled.section`
 const HeroTop = styled.div`
   padding: 40px 24px 48px;
   text-align: center;
-  animation: ${fadeUp} 0.9s ease both;
+  animation: fadeUp 0.9s ease both;
 `;
 
 const YoureInvited = styled.p`
@@ -139,6 +188,7 @@ const HeroPhoto = styled.div`
   background: #2A2A2A;
   overflow: hidden;
   position: relative;
+  min-height: 360px;
   img {
     width: 100%;
     height: 100%;
@@ -147,19 +197,13 @@ const HeroPhoto = styled.div`
     display: block;
     pointer-events: none;
     user-select: none;
-    -webkit-user-drag: none;
-  }
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.08);
   }
 `;
 
 const PhotoPlaceholder = styled.div`
   width: 100%;
   height: 100%;
+  min-height: 360px;
   background: linear-gradient(160deg, #333 0%, #1a1a1a 100%);
   display: flex;
   align-items: center;
@@ -247,11 +291,6 @@ const CalTimeSub = styled.p`
   margin-bottom: 36px;
 `;
 
-const CalGrid = styled.div`
-  width: 100%;
-  margin-top: 8px;
-`;
-
 const CalDayHeader = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -262,7 +301,7 @@ const CalDayLabel = styled.span`
   font-family: 'Cormorant Garamond', serif;
   font-size: 13px;
   letter-spacing: 0.05em;
-  color: ${({ isSun }) => isSun ? '#F0A88A' : C.creamMuted};
+  color: ${({ $isSun }) => $isSun ? '#F0A88A' : C.creamMuted};
   text-align: center;
 `;
 
@@ -279,12 +318,14 @@ const CalCell = styled.div`
   justify-content: center;
   font-family: 'Cormorant Garamond', serif;
   font-size: 15px;
-  font-weight: 300;
-  color: ${({ isSun, isEmpty }) =>
-    isEmpty ? 'transparent' :
-    isSun ? '#F0A88A' : C.cream};
+  font-weight: ${({ $isSelected }) => $isSelected ? 500 : 300};
+  color: ${({ $isSun, $isEmpty, $isSelected }) =>
+    $isEmpty ? 'transparent' :
+    $isSelected ? C.orange :
+    $isSun ? '#F0A88A' : C.cream};
   position: relative;
-  ${({ isSelected }) => isSelected && `
+
+  ${({ $isSelected }) => $isSelected && `
     &::before {
       content: '';
       position: absolute;
@@ -294,9 +335,8 @@ const CalCell = styled.div`
       background: #F5EFE6;
       z-index: 0;
     }
-    color: #E8430D !important;
-    font-weight: 500;
   `}
+
   span { position: relative; z-index: 1; }
 `;
 
@@ -309,27 +349,14 @@ const GalleryGrid = styled.div`
 
 const GalleryCell = styled.div`
   aspect-ratio: 1;
-  background: ${({ isMore }) => isMore ? C.grayOverlay : '#3D1A08'};
+  background: ${({ $isMore }) => $isMore ? C.gray : '#3D1A08'};
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  position: relative;
   overflow: hidden;
   border: 1px solid ${C.orangeDark};
-  cursor: default;
-  -webkit-tap-highlight-color: transparent;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(100%);
-    display: block;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-drag: none;
-    touch-action: none;
-  }
+  min-height: 80px;
 `;
 
 const GalleryPreviewText = styled.span`
@@ -394,14 +421,6 @@ const MapBox = styled.div`
   margin-bottom: 24px;
 `;
 
-const MapPinIcon = styled.div`
-  width: 28px;
-  height: 28px;
-  margin-bottom: 10px;
-  color: ${C.creamMuted};
-  svg { width: 100%; height: 100%; }
-`;
-
 const MapLabel = styled.p`
   font-family: 'Cormorant Garamond', serif;
   font-size: 11px;
@@ -426,7 +445,6 @@ const MapButton = styled.a`
   font-size: 13px;
   color: ${C.cream};
   text-decoration: none;
-  letter-spacing: 0.02em;
   cursor: pointer;
   transition: background 0.2s;
   &:hover { background: rgba(245,239,230,0.1); }
@@ -457,10 +475,6 @@ const AccountSubtitle = styled.p`
   margin-bottom: 40px;
 `;
 
-const AccordionWrap = styled.div`
-  width: 100%;
-`;
-
 const AccordionItem = styled.div`
   border-top: 1px solid ${C.divider};
   width: 100%;
@@ -484,16 +498,16 @@ const AccordionHeader = styled.button`
 const AccordionArrow = styled.span`
   display: inline-block;
   transition: transform 0.3s ease;
-  transform: ${({ isOpen }) => isOpen ? 'rotate(0deg)' : 'rotate(180deg)'};
+  transform: ${({ $isOpen }) => $isOpen ? 'rotate(0deg)' : 'rotate(180deg)'};
   font-size: 12px;
   color: ${C.creamMuted};
 `;
 
 const AccordionBody = styled.div`
   overflow: hidden;
-  max-height: ${({ isOpen }) => isOpen ? '800px' : '0'};
+  max-height: ${({ $isOpen }) => $isOpen ? '800px' : '0'};
   transition: max-height 0.4s ease;
-  padding-bottom: ${({ isOpen }) => isOpen ? '16px' : '0'};
+  padding-bottom: ${({ $isOpen }) => $isOpen ? '16px' : '0'};
 `;
 
 const AccountCard = styled.div`
@@ -572,7 +586,6 @@ const ShareItem = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  cursor: pointer;
 `;
 
 const ShareCircle = styled.button`
@@ -612,52 +625,6 @@ const FooterText = styled.p`
   line-height: 1.8;
 `;
 
-const MenuOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
-  height: 100vh;
-  background: ${C.orangeDark};
-  z-index: 200;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  opacity: ${({ isOpen }) => isOpen ? 1 : 0};
-  pointer-events: ${({ isOpen }) => isOpen ? 'all' : 'none'};
-  transition: opacity 0.3s ease;
-`;
-
-const MenuClose = styled.button`
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
-  color: ${C.cream};
-  line-height: 1;
-`;
-
-const MenuItem = styled.a`
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 28px;
-  font-style: italic;
-  font-weight: 300;
-  color: ${C.cream};
-  text-decoration: none;
-  letter-spacing: 0.08em;
-  margin: 14px 0;
-  cursor: pointer;
-  transition: color 0.2s;
-  &:hover { color: ${C.creamMuted}; }
-`;
-
 const ToastWrap = styled.div`
   position: fixed;
   bottom: 40px;
@@ -671,22 +638,17 @@ const ToastWrap = styled.div`
   border-radius: 100px;
   letter-spacing: 0.04em;
   z-index: 999;
-  opacity: ${({ visible }) => visible ? 1 : 0};
+  opacity: ${({ $visible }) => $visible ? 1 : 0};
   transition: opacity 0.3s ease;
   pointer-events: none;
   white-space: nowrap;
 `;
 
-// ─── 달력 데이터 (2027년 2월) ────────────────────────────
-// 2027.02.01 = 월요일 (startDay=1), 총 28일, 21일 = 일요일
-const calendarData = {
-  selectedDay: 21,
-  startDay: 1,
-  totalDays: 28,
-};
-
+// ─── 달력 데이터 (2027년 2월) ─────────────────────────────
 function buildCalendar() {
-  const { startDay, totalDays, selectedDay } = calendarData;
+  const startDay = 1; // 2027.02.01 = 월요일
+  const totalDays = 28;
+  const selectedDay = 21;
   const cells = [];
 
   for (let i = 0; i < startDay; i++) {
@@ -694,19 +656,13 @@ function buildCalendar() {
   }
   for (let d = 1; d <= totalDays; d++) {
     const col = (startDay + d - 1) % 7;
-    cells.push({
-      day: d,
-      isSun: col === 0,
-      isSelected: d === selectedDay,
-    });
+    cells.push({ day: d, isSun: col === 0, isSelected: d === selectedDay });
   }
 
   const rows = [];
   for (let i = 0; i < cells.length; i += 7) {
     const row = cells.slice(i, i + 7);
-    while (row.length < 7) {
-      row.push({ day: null, isSun: false, isSelected: false });
-    }
+    while (row.length < 7) row.push({ day: null, isSun: false, isSelected: false });
     rows.push(row);
   }
   return rows;
@@ -728,11 +684,20 @@ const brideAccounts = [
 // ─── 메인 컴포넌트 ────────────────────────────────────────
 export default function WeddingInvitation() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [groomAccOpen, setGroomAccOpen] = useState(true);
-  const [brideAccOpen, setBrideAccOpen] = useState(true);
-  const [toastVisible, setToastVisible] = useState(false);
+  const [groomOpen, setGroomOpen] = useState(true);
+  const [brideOpen, setBrideOpen] = useState(true);
   const [toastMsg, setToastMsg] = useState('');
+  const [toastVisible, setToastVisible] = useState(false);
   const calRows = buildCalendar();
+
+  // 폰트 링크 주입 (@import 대신 사용)
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Noto+Serif+KR:wght@300;400;500;600&display=swap';
+    document.head.appendChild(link);
+    return () => { document.head.removeChild(link); };
+  }, []);
 
   const showToast = (msg) => {
     setToastMsg(msg);
@@ -740,7 +705,7 @@ export default function WeddingInvitation() {
     setTimeout(() => setToastVisible(false), 2000);
   };
 
-  const fallbackCopy = (text) => {
+  const fallback = (text) => {
     const el = document.createElement('textarea');
     el.value = text;
     document.body.appendChild(el);
@@ -751,16 +716,10 @@ export default function WeddingInvitation() {
 
   const copyToClipboard = (text, label) => {
     const raw = text.replace(/-/g, '');
-    const doToast = () => showToast(`${label} 계좌번호가 복사되었습니다`);
+    const done = () => showToast(`${label} 계좌번호가 복사되었습니다`);
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(raw).then(doToast).catch(() => {
-        fallbackCopy(raw);
-        doToast();
-      });
-    } else {
-      fallbackCopy(raw);
-      doToast();
-    }
+      navigator.clipboard.writeText(raw).then(done).catch(() => { fallback(raw); done(); });
+    } else { fallback(raw); done(); }
   };
 
   const scrollTo = (id) => {
@@ -784,16 +743,12 @@ export default function WeddingInvitation() {
           </MenuButton>
         </Nav>
 
-        {/* MENU OVERLAY */}
-        <MenuOverlay isOpen={menuOpen}>
+        {/* MENU OVERLAY — $isOpen 사용 */}
+        <MenuOverlay $isOpen={menuOpen}>
           <MenuClose onClick={() => setMenuOpen(false)}>✕</MenuClose>
-          <MenuItem onClick={() => scrollTo('join')}>Join Us</MenuItem>
-          <MenuItem onClick={() => scrollTo('invitation')}>Invitation</MenuItem>
-          <MenuItem onClick={() => scrollTo('calendar')}>Date</MenuItem>
-          <MenuItem onClick={() => scrollTo('gallery')}>Gallery</MenuItem>
-          <MenuItem onClick={() => scrollTo('location')}>Location</MenuItem>
-          <MenuItem onClick={() => scrollTo('account')}>Account</MenuItem>
-          <MenuItem onClick={() => scrollTo('share')}>Share</MenuItem>
+          {[['join','Join Us'],['invitation','Invitation'],['calendar','Date'],['gallery','Gallery'],['location','Location'],['account','Account'],['share','Share']].map(([id, label]) => (
+            <MenuItemBtn key={id} onClick={() => scrollTo(id)}>{label}</MenuItemBtn>
+          ))}
         </MenuOverlay>
 
         {/* HERO */}
@@ -813,9 +768,7 @@ export default function WeddingInvitation() {
 
         {/* JOIN US */}
         <Section id="join">
-          <JoinUsTitle>
-            Join us<br />for our wedding
-          </JoinUsTitle>
+          <JoinUsTitle>Join us<br />for our wedding</JoinUsTitle>
           <FamilyRow>아버님 · 어머님 의 아들 <strong>이현우</strong></FamilyRow>
           <FamilyRow>아버님 · 어머님 의 딸 <strong>손지수</strong></FamilyRow>
         </Section>
@@ -837,10 +790,10 @@ export default function WeddingInvitation() {
           <CalDateLarge>2027.02.21</CalDateLarge>
           <CalTimeSub>일요일 오후 4시</CalTimeSub>
           <Divider />
-          <CalGrid>
+          <div style={{ width: '100%', marginTop: '8px' }}>
             <CalDayHeader>
-              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                <CalDayLabel key={i} isSun={i === 0}>{d}</CalDayLabel>
+              {['S','M','T','W','T','F','S'].map((d, i) => (
+                <CalDayLabel key={i} $isSun={i === 0}>{d}</CalDayLabel>
               ))}
             </CalDayHeader>
             {calRows.map((row, ri) => (
@@ -848,28 +801,28 @@ export default function WeddingInvitation() {
                 {row.map((cell, ci) => (
                   <CalCell
                     key={ci}
-                    isSun={cell.isSun}
-                    isSelected={cell.isSelected}
-                    isEmpty={cell.day === null}
+                    $isSun={cell.isSun}
+                    $isSelected={cell.isSelected}
+                    $isEmpty={cell.day === null}
                   >
                     <span>{cell.day ?? ''}</span>
                   </CalCell>
                 ))}
               </CalRow>
             ))}
-          </CalGrid>
+          </div>
         </Section>
 
         {/* GALLERY */}
         <Section id="gallery" style={{ paddingLeft: 0, paddingRight: 0 }}>
           <SectionLabel style={{ paddingLeft: 28 }}>Gallery</SectionLabel>
           <GalleryGrid>
-            {[0, 1, 2, 3, 4].map(i => (
+            {[0,1,2,3,4].map(i => (
               <GalleryCell key={i}>
                 <GalleryPreviewText>Preview</GalleryPreviewText>
               </GalleryCell>
             ))}
-            <GalleryCell isMore>
+            <GalleryCell $isMore>
               <GalleryMoreNum>+1</GalleryMoreNum>
               <GalleryMoreLabel>MORE</GalleryMoreLabel>
             </GalleryCell>
@@ -884,24 +837,16 @@ export default function WeddingInvitation() {
           <VenueDetail>1층 그랜드볼룸홀</VenueDetail>
           <VenuePhone href="tel:02-000-0000">02-000-0000</VenuePhone>
           <MapBox>
-            <MapPinIcon>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                <circle cx="12" cy="9" r="2.5" />
-              </svg>
-            </MapPinIcon>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={C.creamMuted} strokeWidth="1.5" style={{ marginBottom: '10px' }}>
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
             <MapLabel>MAP PREVIEW</MapLabel>
           </MapBox>
           <MapButtonRow>
-            <MapButton href="https://map.naver.com/v5/search/여의도%20FKI플라자" target="_blank" rel="noreferrer">
-              네이버 지도 ↗
-            </MapButton>
-            <MapButton href="https://map.kakao.com/?q=여의도FKI플라자" target="_blank" rel="noreferrer">
-              카카오맵 ↗
-            </MapButton>
-            <MapButton href="https://tmap.life/FKI플라자" target="_blank" rel="noreferrer">
-              티맵 ↗
-            </MapButton>
+            <MapButton href="https://map.naver.com/v5/search/여의도%20FKI플라자" target="_blank" rel="noreferrer">네이버 지도 ↗</MapButton>
+            <MapButton href="https://map.kakao.com/?q=여의도FKI플라자" target="_blank" rel="noreferrer">카카오맵 ↗</MapButton>
+            <MapButton href="https://tmap.life/FKI플라자" target="_blank" rel="noreferrer">티맵 ↗</MapButton>
           </MapButtonRow>
           <div style={{ width: '100%' }}>
             <TransportTitle>[지하철]</TransportTitle>
@@ -921,14 +866,15 @@ export default function WeddingInvitation() {
         <Section id="account">
           <SectionLabel>Account</SectionLabel>
           <AccountSubtitle>마음 전하실 곳</AccountSubtitle>
-          <AccordionWrap>
+          <div style={{ width: '100%' }}>
 
+            {/* 신랑측 */}
             <AccordionItem>
-              <AccordionHeader onClick={() => setGroomAccOpen(v => !v)}>
+              <AccordionHeader onClick={() => setGroomOpen(v => !v)}>
                 신랑측 계좌번호
-                <AccordionArrow isOpen={groomAccOpen}>▲</AccordionArrow>
+                <AccordionArrow $isOpen={groomOpen}>▲</AccordionArrow>
               </AccordionHeader>
-              <AccordionBody isOpen={groomAccOpen}>
+              <AccordionBody $isOpen={groomOpen}>
                 {groomAccounts.map((acc, i) => (
                   <AccountCard key={i}>
                     <div style={{ textAlign: 'left' }}>
@@ -938,13 +884,10 @@ export default function WeddingInvitation() {
                         <AccountBank>{acc.bank}</AccountBank> {acc.number}
                       </AccountNumber>
                     </div>
-                    <CopyButton
-                      onClick={() => copyToClipboard(acc.number, acc.tag)}
-                      aria-label="계좌번호 복사"
-                    >
+                    <CopyButton onClick={() => copyToClipboard(acc.number, acc.tag)} aria-label="복사">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <rect x="9" y="9" width="13" height="13" rx="2" />
-                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
                       </svg>
                     </CopyButton>
                   </AccountCard>
@@ -952,12 +895,13 @@ export default function WeddingInvitation() {
               </AccordionBody>
             </AccordionItem>
 
+            {/* 신부측 */}
             <AccordionItem>
-              <AccordionHeader onClick={() => setBrideAccOpen(v => !v)}>
+              <AccordionHeader onClick={() => setBrideOpen(v => !v)}>
                 신부측 계좌번호
-                <AccordionArrow isOpen={brideAccOpen}>▲</AccordionArrow>
+                <AccordionArrow $isOpen={brideOpen}>▲</AccordionArrow>
               </AccordionHeader>
-              <AccordionBody isOpen={brideAccOpen}>
+              <AccordionBody $isOpen={brideOpen}>
                 {brideAccounts.map((acc, i) => (
                   <AccountCard key={i}>
                     <div style={{ textAlign: 'left' }}>
@@ -967,13 +911,10 @@ export default function WeddingInvitation() {
                         <AccountBank>{acc.bank}</AccountBank> {acc.number}
                       </AccountNumber>
                     </div>
-                    <CopyButton
-                      onClick={() => copyToClipboard(acc.number, acc.tag)}
-                      aria-label="계좌번호 복사"
-                    >
+                    <CopyButton onClick={() => copyToClipboard(acc.number, acc.tag)} aria-label="복사">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <rect x="9" y="9" width="13" height="13" rx="2" />
-                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
                       </svg>
                     </CopyButton>
                   </AccountCard>
@@ -981,7 +922,7 @@ export default function WeddingInvitation() {
               </AccordionBody>
             </AccordionItem>
 
-          </AccordionWrap>
+          </div>
         </Section>
 
         {/* SHARE */}
@@ -993,39 +934,26 @@ export default function WeddingInvitation() {
             <ShareItem>
               <ShareCircle aria-label="카카오 공유">
                 <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 3C6.48 3 2 6.58 2 11c0 2.77 1.63 5.22 4.1 6.73L5 21l4.3-2.27c.87.17 1.76.27 2.7.27 5.52 0 10-3.58 10-8S17.52 3 12 3z" />
+                  <path d="M12 3C6.48 3 2 6.58 2 11c0 2.77 1.63 5.22 4.1 6.73L5 21l4.3-2.27c.87.17 1.76.27 2.7.27 5.52 0 10-3.58 10-8S17.52 3 12 3z"/>
                 </svg>
               </ShareCircle>
               <ShareLabel>KAKAO</ShareLabel>
             </ShareItem>
             <ShareItem>
-              <ShareCircle
-                aria-label="링크 복사"
-                onClick={() => copyToClipboard(window.location.href, '링크')}
-              >
+              <ShareCircle aria-label="링크 복사" onClick={() => copyToClipboard(window.location.href, '링크')}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
-                  <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+                  <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>
                 </svg>
               </ShareCircle>
               <ShareLabel>LINK</ShareLabel>
             </ShareItem>
             <ShareItem>
-              <ShareCircle
-                aria-label="더보기 공유"
-                onClick={() => {
-                  if (navigator.share) {
-                    navigator.share({
-                      title: '이현우 & 손지수 결혼합니다',
-                      url: window.location.href,
-                    });
-                  }
-                }}
-              >
+              <ShareCircle aria-label="더보기" onClick={() => { if (navigator.share) navigator.share({ title: '이현우 & 손지수 결혼합니다', url: window.location.href }); }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
-                  <polyline points="16 6 12 2 8 6" />
-                  <line x1="12" y1="2" x2="12" y2="15" />
+                  <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+                  <polyline points="16 6 12 2 8 6"/>
+                  <line x1="12" y1="2" x2="12" y2="15"/>
                 </svg>
               </ShareCircle>
               <ShareLabel>MORE</ShareLabel>
@@ -1035,14 +963,11 @@ export default function WeddingInvitation() {
 
         {/* FOOTER */}
         <Footer>
-          <FooterText>
-            이현우 &amp; 손지수<br />
-            2027.02.21
-          </FooterText>
+          <FooterText>이현우 &amp; 손지수<br />2027.02.21</FooterText>
         </Footer>
 
-        {/* TOAST */}
-        <ToastWrap visible={toastVisible}>{toastMsg}</ToastWrap>
+        {/* TOAST — $visible 사용 */}
+        <ToastWrap $visible={toastVisible}>{toastMsg}</ToastWrap>
 
       </PageWrapper>
     </>
