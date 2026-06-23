@@ -7,59 +7,61 @@ import {
 } from '../styles/styled';
 
 const KAKAO_APP_KEY = '36bd7ed82531660cde9013ad17b59753';
-// 여의도 FKI 플라자 좌표
 const LAT = 37.5253;
 const LNG = 126.9241;
 
+function renderMap(container) {
+  const { kakao } = window;
+  const map = new kakao.maps.Map(container, {
+    center: new kakao.maps.LatLng(LAT, LNG),
+    level: 3,
+  });
+  const marker = new kakao.maps.Marker({
+    position: new kakao.maps.LatLng(LAT, LNG),
+  });
+  marker.setMap(map);
+  new kakao.maps.InfoWindow({
+    content: '<div style="padding:6px 10px;font-size:13px;font-family:sans-serif;white-space:nowrap;">여의도 FKI 플라자</div>',
+  }).open(map, marker);
+}
+
 export default function LocationSection() {
-  const mapRef  = useRef(null);
-  const loaded  = useRef(false);
+  const mapRef = useRef(null);
 
   useEffect(() => {
-    if (loaded.current) return;
-    loaded.current = true;
+    const container = mapRef.current;
+    if (!container) return;
 
-    const initMap = () => {
-      const attempts = { count: 0 };
-      const timer = setInterval(() => {
-        attempts.count++;
-        if (window.kakao && window.kakao.maps) {
-          clearInterval(timer);
-          window.kakao.maps.load(() => {
-            const container = mapRef.current;
-            if (!container) return;
-            const map = new window.kakao.maps.Map(container, {
-              center: new window.kakao.maps.LatLng(LAT, LNG),
-              level: 3,
-            });
-            // 마커
-            const marker = new window.kakao.maps.Marker({
-              position: new window.kakao.maps.LatLng(LAT, LNG),
-            });
-            marker.setMap(map);
-            // 인포윈도우
-            const infowindow = new window.kakao.maps.InfoWindow({
-              content: '<div style="padding:6px 10px;font-size:13px;font-family:sans-serif;white-space:nowrap;">여의도 FKI 플라자</div>',
-            });
-            infowindow.open(map, marker);
-          });
-        } else if (attempts.count >= 50) {
-          clearInterval(timer);
-        }
-      }, 100);
-    };
-
-    // SDK 스크립트가 이미 있으면 바로 초기화
-    if (document.getElementById('kakao-map-sdk')) {
-      initMap();
+    // 이미 SDK가 완전히 로드된 상태면 바로 렌더
+    if (window.kakao?.maps?.Map) {
+      renderMap(container);
       return;
     }
 
-    const script = document.createElement('script');
-    script.id  = 'kakao-map-sdk';
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&autoload=false`;
-    script.onload = initMap;
-    document.head.appendChild(script);
+    // SDK 스크립트 삽입 (중복 방지)
+    if (!document.getElementById('kakao-map-sdk')) {
+      const script = document.createElement('script');
+      script.id  = 'kakao-map-sdk';
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&autoload=false`;
+      document.head.appendChild(script);
+    }
+
+    // kakao.maps.Map 생성자가 준비될 때까지 폴링
+    let timer;
+    let attempts = 0;
+    const wait = () => {
+      attempts++;
+      if (window.kakao?.maps?.Map) {
+        renderMap(container);
+      } else if (window.kakao?.maps && typeof window.kakao.maps.load === 'function') {
+        window.kakao.maps.load(() => renderMap(container));
+      } else if (attempts < 100) {
+        timer = setTimeout(wait, 100);
+      }
+    };
+    timer = setTimeout(wait, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -69,7 +71,6 @@ export default function LocationSection() {
       <VenueDetail>서울특별시 영등포구 여의대로 24</VenueDetail>
       <VenueDetail>1층 그랜드볼룸홀</VenueDetail>
 
-      {/* 카카오맵 */}
       <div
         ref={mapRef}
         style={{
