@@ -28,25 +28,48 @@ jobs:
           node-version: 22
           cache: npm
 
+<<<<<<< HEAD
       - name: Install
+=======
+      - name: Install dependencies
+>>>>>>> 96cfa0d35c7e0ac81573dfc435df0ce366a20f74
         run: npm install
 
       - name: Build
         run: npm run build
 
+<<<<<<< HEAD
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Artifact
+=======
+      - name: Verify dist
+        run: |
+          echo "=== DIST ==="
+          ls -R dist
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+>>>>>>> 96cfa0d35c7e0ac81573dfc435df0ce366a20f74
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
   deploy:
+<<<<<<< HEAD
+=======
+    needs: build
+    runs-on: ubuntu-latest
+
+>>>>>>> 96cfa0d35c7e0ac81573dfc435df0ce366a20f74
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
+<<<<<<< HEAD
     needs: build
     runs-on: ubuntu-latest
 
@@ -54,3 +77,9 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
+=======
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+>>>>>>> 96cfa0d35c7e0ac81573dfc435df0ce366a20f74
