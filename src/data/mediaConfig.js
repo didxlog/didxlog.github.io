@@ -8,6 +8,7 @@
 // ── 히어로 사진 (세로 3:4 비율 권장, 흑백 처리됨) ──
 // null 이면 PHOTO 플레이스홀더로 표시
 export const HERO_PHOTO = '/media/hero.jpeg';
+export const HERO_VIDEO = null;
 
 // ── 히어로 섹션 동영상 (사진 대신 동영상을 쓰고 싶을 때) ──
 // 동영상이 설정되면 사진보다 우선 표시됩니다.
