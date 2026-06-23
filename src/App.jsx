@@ -670,15 +670,15 @@ function buildCalendar() {
 
 // ─── 계좌 데이터 ──────────────────────────────────────────
 const groomAccounts = [
-  { tag: '신랑', name: '이현우', bank: '국민은행', number: '000-000-000000' },
-  { tag: '신랑 아버지', name: '이○○', bank: '신한은행', number: '000-000-000000' },
-  { tag: '신랑 어머니', name: '김○○', bank: '우리은행', number: '000-000-000000' },
+  { tag: '신랑', name: '이현우', bank: '하나은행', number: '000-000-000000' },
+  { tag: '신랑 아버지', name: '이호승', bank: '신한은행', number: '000-000-000000' },
+  { tag: '신랑 어머니', name: '손서교', bank: '우리은행', number: '000-000-000000' },
 ];
 
 const brideAccounts = [
-  { tag: '신부', name: '손지수', bank: '하나은행', number: '000-000-000000' },
-  { tag: '신부 아버지', name: '손○○', bank: '기업은행', number: '000-000-000000' },
-  { tag: '신부 어머니', name: '박○○', bank: '농협은행', number: '000-000-000000' },
+  { tag: '신부', name: '손지수', bank: '신한은행', number: '000-000-000000' },
+  { tag: '신부 아버지', name: '손무성', bank: '국민은행', number: '000-000-000000' },
+  { tag: '신부 어머니', name: '곽정애', bank: '신한은행', number: '000-000-000000' },
 ];
 
 // ─── 메인 컴포넌트 ────────────────────────────────────────
@@ -769,8 +769,8 @@ export default function WeddingInvitation() {
         {/* JOIN US */}
         <Section id="join">
           <JoinUsTitle>Join us<br />for our wedding</JoinUsTitle>
-          <FamilyRow>아버님 · 어머님 의 아들 <strong>이현우</strong></FamilyRow>
-          <FamilyRow>아버님 · 어머님 의 딸 <strong>손지수</strong></FamilyRow>
+          <FamilyRow>아호승 · 손서교 의 아들 <strong>이현우</strong></FamilyRow>
+          <FamilyRow>손무성 · 곽정애 의 &nbsp;&nbsp;&nbsp;딸 <strong>손지수</strong></FamilyRow>
         </Section>
 
         {/* INVITATION */}
@@ -851,13 +851,13 @@ export default function WeddingInvitation() {
           <div style={{ width: '100%' }}>
             <TransportTitle>[지하철]</TransportTitle>
             <TransportDesc>
-              5호선 여의도역 4번 출구에서 도보 3분<br />
+              5호선 여의도역 1번 출구에서 도보 3분<br />
               9호선 샛강역 2번 출구에서 도보 5분
             </TransportDesc>
             <TransportTitle>[주차 안내]</TransportTitle>
             <TransportDesc>
               FKI 플라자 건물 내 주차장 이용 가능<br />
-              행사 당일 2시간 무료 주차 지원
+              3시간 무료 주차 지원
             </TransportDesc>
           </div>
         </Section>
