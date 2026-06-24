@@ -18,51 +18,68 @@ export default function GallerySection() {
   const [lightboxIdx, setLightboxIdx] = useState(null);
   const isOpen = lightboxIdx !== null;
 
-  // 슬라이드 애니메이션 state
-  const [offset,   setOffset]   = useState(0);   // 드래그 중 px 오프셋
-  const [sliding,  setSliding]  = useState(false); // transition 적용 여부
-  const [displayIdx, setDisplayIdx] = useState(null); // 실제 보여주는 인덱스 (전환 중 유지)
+  const [offset,     setOffset]     = useState(0);
+  const [sliding,    setSliding]    = useState(false);
+  const [displayIdx, setDisplayIdx] = useState(null);
 
-  const touchStartX = useRef(null);
-  const isDragging  = useRef(false);
+  const touchStartX      = useRef(null);
+  const isDragging       = useRef(false);
+  const isTransitioning  = useRef(false);
+  const slideTimer       = useRef(null);
+  const lightboxIdxRef   = useRef(null);
+  const videoRef         = useRef(null);
+
+  // lightboxIdx 변경 시 ref 동기화
+  useEffect(() => {
+    lightboxIdxRef.current = lightboxIdx;
+  }, [lightboxIdx]);
 
   const visiblePhotos = expanded ? GALLERY_PHOTOS : GALLERY_PHOTOS.slice(0, GALLERY_VISIBLE_COUNT);
   const remainCount   = Math.max(0, total - GALLERY_VISIBLE_COUNT);
 
-  // 라이트박스 열기
   const openLightbox = (i) => {
     setLightboxIdx(i);
     setDisplayIdx(i);
     setOffset(0);
     setSliding(false);
+    isTransitioning.current = false;
   };
 
-  const close = () => {
+  const close = useCallback(() => {
+    if (slideTimer.current) clearTimeout(slideTimer.current);
+    isTransitioning.current = false;
     setLightboxIdx(null);
     setDisplayIdx(null);
     setOffset(0);
-  };
+    setSliding(false);
+  }, []);
 
-  // 슬라이드 전환 — direction: 'prev' | 'next'
   const slideTo = useCallback((direction) => {
     if (total <= 1) return;
+    if (isTransitioning.current) return;
+
+    const currentIdx = lightboxIdxRef.current;
+    if (currentIdx === null) return;
+
     const newIdx = direction === 'next'
-      ? (lightboxIdx + 1) % total
-      : (lightboxIdx - 1 + total) % total;
+      ? (currentIdx + 1) % total
+      : (currentIdx - 1 + total) % total;
     const targetOffset = direction === 'next' ? -VW() : VW();
 
-    // 1) 현재 사진을 목표 방향으로 밀어냄
+    isTransitioning.current = true;
     setSliding(true);
     setOffset(targetOffset);
 
-    // 2) transition 끝나면 인덱스 바꾸고 offset 리셋 (no transition)
-    setTimeout(() => {
+    if (slideTimer.current) clearTimeout(slideTimer.current);
+    slideTimer.current = setTimeout(() => {
       setSliding(false);
       setOffset(0);
       setLightboxIdx(newIdx);
       setDisplayIdx(newIdx);
+      lightboxIdxRef.current  = newIdx;
+      isTransitioning.current = false;
     }, 320);
-  }, [lightboxIdx, total]);
+  }, [total]);
 
   const prev = useCallback(() => slideTo('prev'), [slideTo]);
   const next = useCallback(() => slideTo('next'), [slideTo]);
@@ -77,7 +94,7 @@ export default function GallerySection() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, prev, next]);
+  }, [isOpen, prev, next, close]);
 
   // 스크롤 막기
   useEffect(() => {
@@ -85,16 +102,24 @@ export default function GallerySection() {
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  // 터치 — 손가락 따라 실시간으로 사진 이동
+  // 언마운트 시 타이머 정리
+  useEffect(() => {
+    return () => {
+      if (slideTimer.current) clearTimeout(slideTimer.current);
+    };
+  }, []);
+
+  // 터치
   const onTouchStart = useCallback((e) => {
-    if (sliding) return;
+    if (isTransitioning.current) return;
     touchStartX.current = e.touches[0].clientX;
     isDragging.current  = true;
     setSliding(false);
-  }, [sliding]);
+  }, []);
 
   const onTouchMove = useCallback((e) => {
     if (!isDragging.current || touchStartX.current === null) return;
+    if (isTransitioning.current) return;
     const dx = e.touches[0].clientX - touchStartX.current;
     setOffset(dx);
   }, []);
@@ -106,15 +131,33 @@ export default function GallerySection() {
     touchStartX.current = null;
 
     if (Math.abs(dx) > 60) {
-      // 충분히 스와이프 → 슬라이드 전환
       dx < 0 ? next() : prev();
     } else {
-      // 짧으면 원위치로 튕겨 돌아오기
       setSliding(true);
       setOffset(0);
       setTimeout(() => setSliding(false), 320);
     }
   }, [prev, next]);
+
+  // 비디오 뷰포트 진입 시 자동재생 + 이탈 시 일시정지
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.4 },
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
@@ -156,7 +199,15 @@ export default function GallerySection() {
         {GALLERY_VIDEO && (
           <GalleryVideoWrap>
             <GalleryVideoLabel>Film</GalleryVideoLabel>
-            <video src={GALLERY_VIDEO} controls playsInline style={{ width: '100%', display: 'block' }} />
+            <video
+              ref={videoRef}
+              src={GALLERY_VIDEO}
+              loop
+              muted
+              playsInline
+              controls
+              style={{ width: '100%', display: 'block' }}
+            />
           </GalleryVideoWrap>
         )}
       </Section>
@@ -179,13 +230,13 @@ export default function GallerySection() {
               alt={`갤러리 ${displayIdx + 1}`}
               $offset={offset}
               $sliding={sliding}
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
             />
 
             {total > 1 && (
               <>
-                <LightboxNav $dir="prev" onClick={e => { e.stopPropagation(); prev(); }}>‹</LightboxNav>
-                <LightboxNav $dir="next" onClick={e => { e.stopPropagation(); next(); }}>›</LightboxNav>
+                <LightboxNav $dir="prev" onClick={(e) => { e.stopPropagation(); prev(); }}>‹</LightboxNav>
+                <LightboxNav $dir="next" onClick={(e) => { e.stopPropagation(); next(); }}>›</LightboxNav>
               </>
             )}
 

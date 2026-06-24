@@ -21,17 +21,6 @@ export default function ShareSection({ showToast }) {
       <SectionLabel>Share</SectionLabel>
       <ShareSubtitle>소중한 분들에게 전해주세요</ShareSubtitle>
       <ShareButtonRow>
-
-        {/* 카카오 */}
-        <ShareItem>
-          <ShareCircle aria-label="카카오 공유">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 3C6.48 3 2 6.58 2 11c0 2.77 1.63 5.22 4.1 6.73L5 21l4.3-2.27c.87.17 1.76.27 2.7.27 5.52 0 10-3.58 10-8S17.52 3 12 3z"/>
-            </svg>
-          </ShareCircle>
-          <ShareLabel>KAKAO</ShareLabel>
-        </ShareItem>
-
         {/* 링크 복사 */}
         <ShareItem>
           <ShareCircle aria-label="링크 복사" onClick={handleLinkCopy}>
