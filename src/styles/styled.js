@@ -107,7 +107,7 @@ export const HeroSection = styled.section`
 `;
 
 export const HeroTop = styled.div`
-  padding: 24px 24px 48px;       /* 40px → 24px : 신랑 이름 위 여백 축소 */
+  padding: 0px 24px 48px;        /* 24px → 8px : 상단바 아래 여백 축소 */
   text-align: center;
   animation: fadeUp 0.9s ease both;
 `;

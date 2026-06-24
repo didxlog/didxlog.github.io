@@ -6,7 +6,7 @@ export default function NavBar({ menuOpen, setMenuOpen, scrollTo }) {
   return (
     <>
       <Nav>
-        <NavTitle>The Wedding of Hyunwoo &amp; Jisu</NavTitle>
+        <NavTitle></NavTitle>
         <MenuButton onClick={() => setMenuOpen(true)} aria-label="메뉴 열기">
           <span /><span /><span />
         </MenuButton>
