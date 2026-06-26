@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import styled from 'styled-components';
 import {
   Section, SectionLabel,
   GalleryGrid, GalleryCell,
@@ -7,77 +6,9 @@ import {
   GalleryVideoWrap, GalleryVideoLabel,
   LightboxOverlay, LightboxImg, LightboxClose, LightboxNav, LightboxCounter,
 } from '../styles/styled';
-import {
-  GALLERY_PHOTOS,
-  GALLERY_VISIBLE_COUNT,
-  GALLERY_VIDEO,
-  GALLERY_VIDEO_POSTER, // mediaConfig에 없으면 undefined — 자동 캡처로 대체됨
-} from '../data/mediaConfig';
+import { GALLERY_PHOTOS, GALLERY_VISIBLE_COUNT, GALLERY_VIDEO } from '../data/mediaConfig';
 
 const VW = () => window.innerWidth;
-
-/* ── 커스텀 비디오 플레이어 ── */
-const VideoContainer = styled.div`
-  position: relative;
-  width: 100%;
-  min-height: 200px;
-  background: #111;
-  overflow: hidden;
-  line-height: 0;
-`;
-
-const ThumbLayer = styled.div`
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  cursor: pointer;
-  background: ${({ $src }) =>
-    $src ? `url("${$src}") center / cover no-repeat` : '#1c1c1c'};
-
-  /* 포스터 이미지 위 어두운 레이어 */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.28);
-  }
-`;
-
-const PlayBtn = styled.button`
-  position: relative;
-  z-index: 4;
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.9);
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.13s;
-
-  &:active {
-    transform: scale(0.88);
-    background: rgba(0, 0, 0, 0.65);
-  }
-`;
-
-const PlayHint = styled.span`
-  position: relative;
-  z-index: 4;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  font-family: inherit;
-`;
 
 export default function GallerySection() {
   const hasPhotos = GALLERY_PHOTOS.length > 0;
@@ -87,105 +18,56 @@ export default function GallerySection() {
   const [lightboxIdx, setLightboxIdx] = useState(null);
   const isOpen = lightboxIdx !== null;
 
-  const [offset,     setOffset]     = useState(0);
-  const [sliding,    setSliding]    = useState(false);
-  const [displayIdx, setDisplayIdx] = useState(null);
+  // 슬라이드 애니메이션 state
+  const [offset,   setOffset]   = useState(0);   // 드래그 중 px 오프셋
+  const [sliding,  setSliding]  = useState(false); // transition 적용 여부
+  const [displayIdx, setDisplayIdx] = useState(null); // 실제 보여주는 인덱스 (전환 중 유지)
 
-  // 비디오 상태
-  const [videoStarted, setVideoStarted] = useState(false);
-  const [thumbSrc,     setThumbSrc]     = useState(GALLERY_VIDEO_POSTER ?? null);
-
-  const touchStartX     = useRef(null);
-  const isDragging      = useRef(false);
-  const isTransitioning = useRef(false);
-  const slideTimer      = useRef(null);
-  const lightboxIdxRef  = useRef(null);
-  const videoRef        = useRef(null);
-
-  useEffect(() => {
-    lightboxIdxRef.current = lightboxIdx;
-  }, [lightboxIdx]);
-
-  // 자동 썸네일 캡처 — GALLERY_VIDEO_POSTER 없을 때만 실행
-  useEffect(() => {
-    if (!GALLERY_VIDEO || GALLERY_VIDEO_POSTER) return;
-
-    const vid       = document.createElement('video');
-    vid.src         = GALLERY_VIDEO;
-    vid.muted       = true;
-    vid.playsInline = true;
-    vid.preload     = 'metadata';
-
-    const capture = () => {
-      try {
-        const canvas  = document.createElement('canvas');
-        canvas.width  = vid.videoWidth  || 640;
-        canvas.height = vid.videoHeight || 360;
-        canvas.getContext('2d').drawImage(vid, 0, 0);
-        setThumbSrc(canvas.toDataURL('image/jpeg', 0.85));
-      } catch (e) {
-        // CORS 등 캡처 실패 시 썸네일 없이 진행
-      }
-      vid.src = '';
-    };
-
-    vid.addEventListener('loadedmetadata', () => { vid.currentTime = 0.1; });
-    vid.addEventListener('seeked', capture, { once: true });
-    vid.load();
-
-    return () => { vid.src = ''; };
-  }, []);
+  const touchStartX = useRef(null);
+  const isDragging  = useRef(false);
 
   const visiblePhotos = expanded ? GALLERY_PHOTOS : GALLERY_PHOTOS.slice(0, GALLERY_VISIBLE_COUNT);
   const remainCount   = Math.max(0, total - GALLERY_VISIBLE_COUNT);
 
+  // 라이트박스 열기
   const openLightbox = (i) => {
     setLightboxIdx(i);
     setDisplayIdx(i);
     setOffset(0);
     setSliding(false);
-    isTransitioning.current = false;
   };
 
-  const close = useCallback(() => {
-    if (slideTimer.current) clearTimeout(slideTimer.current);
-    isTransitioning.current = false;
+  const close = () => {
     setLightboxIdx(null);
     setDisplayIdx(null);
     setOffset(0);
-    setSliding(false);
-  }, []);
+  };
 
+  // 슬라이드 전환 — direction: 'prev' | 'next'
   const slideTo = useCallback((direction) => {
     if (total <= 1) return;
-    if (isTransitioning.current) return;
-
-    const currentIdx = lightboxIdxRef.current;
-    if (currentIdx === null) return;
-
-    const newIdx       = direction === 'next'
-      ? (currentIdx + 1) % total
-      : (currentIdx - 1 + total) % total;
+    const newIdx = direction === 'next'
+      ? (lightboxIdx + 1) % total
+      : (lightboxIdx - 1 + total) % total;
     const targetOffset = direction === 'next' ? -VW() : VW();
 
-    isTransitioning.current = true;
+    // 1) 현재 사진을 목표 방향으로 밀어냄
     setSliding(true);
     setOffset(targetOffset);
 
-    if (slideTimer.current) clearTimeout(slideTimer.current);
-    slideTimer.current = setTimeout(() => {
+    // 2) transition 끝나면 인덱스 바꾸고 offset 리셋 (no transition)
+    setTimeout(() => {
       setSliding(false);
       setOffset(0);
       setLightboxIdx(newIdx);
       setDisplayIdx(newIdx);
-      lightboxIdxRef.current  = newIdx;
-      isTransitioning.current = false;
     }, 320);
-  }, [total]);
+  }, [lightboxIdx, total]);
 
   const prev = useCallback(() => slideTo('prev'), [slideTo]);
   const next = useCallback(() => slideTo('next'), [slideTo]);
 
+  // 키보드
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e) => {
@@ -195,37 +77,24 @@ export default function GallerySection() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isOpen, prev, next, close]);
+  }, [isOpen, prev, next]);
 
+  // 스크롤 막기
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  useEffect(() => {
-    return () => {
-      if (slideTimer.current) clearTimeout(slideTimer.current);
-    };
-  }, []);
-
-  // 탭 → user gesture 내 실행이므로 소리 있는 재생 허용
-  const handlePlay = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    setVideoStarted(true);
-    video.play().catch(() => {});
-  }, []);
-
+  // 터치 — 손가락 따라 실시간으로 사진 이동
   const onTouchStart = useCallback((e) => {
-    if (isTransitioning.current) return;
+    if (sliding) return;
     touchStartX.current = e.touches[0].clientX;
     isDragging.current  = true;
     setSliding(false);
-  }, []);
+  }, [sliding]);
 
   const onTouchMove = useCallback((e) => {
     if (!isDragging.current || touchStartX.current === null) return;
-    if (isTransitioning.current) return;
     const dx = e.touches[0].clientX - touchStartX.current;
     setOffset(dx);
   }, []);
@@ -237,8 +106,10 @@ export default function GallerySection() {
     touchStartX.current = null;
 
     if (Math.abs(dx) > 60) {
+      // 충분히 스와이프 → 슬라이드 전환
       dx < 0 ? next() : prev();
     } else {
+      // 짧으면 원위치로 튕겨 돌아오기
       setSliding(true);
       setOffset(0);
       setTimeout(() => setSliding(false), 320);
@@ -285,38 +156,19 @@ export default function GallerySection() {
         {GALLERY_VIDEO && (
           <GalleryVideoWrap>
             <GalleryVideoLabel>Film</GalleryVideoLabel>
-            <VideoContainer>
-              <video
-                ref={videoRef}
-                src={GALLERY_VIDEO}
-                playsInline
-                controls
-                preload="metadata"
-                style={{ width: '100%', display: 'block' }}
-                onEnded={() => {
-                  setVideoStarted(false);
-                  if (videoRef.current) videoRef.current.currentTime = 0;
-                }}
-              />
-
-              {/* 썸네일 오버레이 — 재생 전까지 표시 */}
-              {!videoStarted && (
-                <ThumbLayer $src={thumbSrc} onClick={handlePlay}>
-                  <PlayBtn>
-                    <svg
-                      width="26"
-                      height="26"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                      style={{ marginLeft: 4 }}
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </PlayBtn>
-                  <PlayHint>탭하여 영상 재생</PlayHint>
-                </ThumbLayer>
-              )}
-            </VideoContainer>
+            <video
+              src={GALLERY_VIDEO}
+              controls
+              playsInline
+              style={{ width: '100%', display: 'block' }}
+              ref={el => {
+                if (!el) return;
+                // 첫 터치/클릭 시 자동재생 시도
+                const play = () => { el.play().catch(() => {}); };
+                window.addEventListener('touchstart', play, { once: true });
+                window.addEventListener('click',      play, { once: true });
+              }}
+            />
           </GalleryVideoWrap>
         )}
       </Section>
@@ -339,13 +191,13 @@ export default function GallerySection() {
               alt={`갤러리 ${displayIdx + 1}`}
               $offset={offset}
               $sliding={sliding}
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             />
 
             {total > 1 && (
               <>
-                <LightboxNav $dir="prev" onClick={(e) => { e.stopPropagation(); prev(); }}>‹</LightboxNav>
-                <LightboxNav $dir="next" onClick={(e) => { e.stopPropagation(); next(); }}>›</LightboxNav>
+                <LightboxNav $dir="prev" onClick={e => { e.stopPropagation(); prev(); }}>‹</LightboxNav>
+                <LightboxNav $dir="next" onClick={e => { e.stopPropagation(); next(); }}>›</LightboxNav>
               </>
             )}
 

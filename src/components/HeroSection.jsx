@@ -12,7 +12,6 @@ export default function HeroSection() {
   return (
     <HeroWrap id="hero">
       <HeroTop>
-        <YoureInvited>You're Invited</YoureInvited>
         <HeroNameGroom>HYEONWOO</HeroNameGroom>
         <HeroAnd>&amp;</HeroAnd>
         <HeroNameBride>JISU</HeroNameBride>

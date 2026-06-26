@@ -107,7 +107,7 @@ export const HeroSection = styled.section`
 `;
 
 export const HeroTop = styled.div`
-  padding: 0px 24px 48px;        /* 24px → 8px : 상단바 아래 여백 축소 */
+  padding: 40px 24px 48px;
   text-align: center;
   animation: fadeUp 0.9s ease both;
 `;
@@ -118,7 +118,7 @@ export const YoureInvited = styled.p`
   font-size: 16px;
   color: rgba(247,245,242,0.45);
   letter-spacing: 0.08em;
-  margin-bottom: 10px;           /* 20px → 10px : 신랑 이름 위 여백 추가 축소 */
+  margin-bottom: 20px;
 `;
 
 export const HeroNameGroom = styled.h1`
@@ -126,20 +126,17 @@ export const HeroNameGroom = styled.h1`
   font-size: clamp(40px, 12.5vw, 64px);
   font-weight: 300;
   color: ${C.white};
-  letter-spacing: 0em;           /* 0.04em → 0em : 자간 좁힘 */
-  line-height: 0.85;             /* 1 → 0.85 : 행간 좁힘 */
-  transform: scaleY(1.18);       /* 글자 세로로 길게 */
-  transform-origin: center top;
-  display: block;
+  letter-spacing: 0.04em;
+  line-height: 1;
 `;
 
 export const HeroAnd = styled.p`
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 34px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
   font-style: italic;
   font-weight: 300;
   color: ${C.whiteMuted};
-  margin: 6px 0;                 /* 14px → 6px : & 위아래 행간 축소 */
+  margin: 14px 0;
 `;
 
 export const HeroNameBride = styled.h1`
@@ -147,11 +144,8 @@ export const HeroNameBride = styled.h1`
   font-size: clamp(40px, 12.5vw, 64px);
   font-weight: 300;
   color: ${C.white};
-  letter-spacing: 0em;           /* 0.04em → 0em : 자간 좁힘 */
-  line-height: 0.85;             /* 1 → 0.85 : 행간 좁힘 */
-  transform: scaleY(1.18);       /* 글자 세로로 길게 */
-  transform-origin: center top;
-  display: block;
+  letter-spacing: 0.04em;
+  line-height: 1;
   margin-bottom: 36px;
 `;
 
