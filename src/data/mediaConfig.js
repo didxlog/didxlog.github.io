@@ -39,3 +39,12 @@ export const GALLERY_VISIBLE_COUNT = 8;
 // 사진 그리드 아래에 단독으로 표시됩니다.
 // export const GALLERY_VIDEO = null;
 export const GALLERY_VIDEO = '/media/video.mp4';
+
+// ── Tip 섹션 사진 ──
+// 순서대로: [돔형태, 동시예식, ATM위치]
+export const TIP_PHOTOS = [null, null, null];
+// export const TIP_PHOTOS = [
+//   '/media/tip_dome.jpg',
+//   '/media/tip_simultaneous.jpg',
+//   '/media/tip_atm.jpg',
+// ];

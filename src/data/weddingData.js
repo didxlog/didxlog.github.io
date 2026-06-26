@@ -18,6 +18,8 @@ export const NAV_MENUS = [
   ['calendar',  'Date'],
   ['gallery',   'Gallery'],
   ['location',  'Location'],
+  ['tip',       'Tip'],
   ['account',   'Account'],
   ['share',     'Share'],
 ];
+ 

@@ -131,10 +131,10 @@ export const HeroNameGroom = styled.h1`
 `;
 
 export const HeroAnd = styled.p`
-  font-family: 'Noto Serif KR', serif;
-  font-size: 15px;
-  font-style: italic;
-  font-weight: 300;
+  font-family: 'Tenor Sans', sans-serif;
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 400;
   color: ${C.whiteMuted};
   margin: 14px 0;
 `;
@@ -546,6 +546,71 @@ export const TransportDesc = styled.p`
   color: ${C.whiteMuted};
   line-height: 1.9;
   text-align: left;
+`;
+
+// ─── Tip ──────────────────────────────────────────────────
+export const TipCard = styled.div`
+  width: 100%;
+  border: 1px solid ${C.divider};
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+`;
+
+export const TipPhoto = styled.div`
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: linear-gradient(160deg, #1a2a3a 0%, #0a1520 100%);
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+`;
+
+export const TipPhotoPlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: rgba(247,245,242,0.15);
+`;
+
+export const TipBody = styled.div`
+  padding: 18px 20px;
+`;
+
+export const TipNumber = styled.span`
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  color: ${C.whiteMuted};
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+`;
+
+export const TipTitle = styled.p`
+  font-family: 'Noto Serif KR', serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: ${C.white};
+  margin-bottom: 6px;
+  word-break: keep-all;
+`;
+
+export const TipDesc = styled.p`
+  font-family: 'Noto Serif KR', serif;
+  font-size: 14px;
+  color: ${C.whiteMuted};
+  line-height: 1.8;
+  word-break: keep-all;
 `;
 
 // ─── Account ──────────────────────────────────────────────
