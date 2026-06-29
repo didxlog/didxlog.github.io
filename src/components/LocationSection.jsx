@@ -104,7 +104,7 @@ export default function LocationSection() {
         <TransportDesc>여의도역 환승센터 정류장</TransportDesc>
 
         <TransportTitle>[지하철]</TransportTitle>
-        <TransportDesc>5호선 여의도역 1번 출구 도보 5분</TransportDesc>
+        <TransportDesc>5·9호선 여의도역 1번 출구 도보 5분</TransportDesc>
         <TransportTitle>[주차 안내]</TransportTitle>
         <TransportDesc>
           FKI 플라자 건물 내 주차장 이용 가능<br />
