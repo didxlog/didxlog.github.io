@@ -287,7 +287,8 @@ export const CalDayLabel = styled.span`
   font-family: 'Playfair Display', serif;
   font-size: 14px;
   letter-spacing: 0.05em;
-  color: ${({ $isSun }) => $isSun ? '#7EB8D4' : C.whiteMuted};
+  color: ${({ $isSun, $isSat }) =>
+    $isSun ? '#E8816A' : $isSat ? '#7EB8D4' : C.whiteMuted};
   text-align: center;
 `;
 
@@ -305,10 +306,11 @@ export const CalCell = styled.div`
   font-family: 'Playfair Display', serif;
   font-size: 16px;
   font-weight: ${({ $isSelected }) => $isSelected ? 500 : 300};
-  color: ${({ $isSun, $isEmpty, $isSelected }) =>
+  color: ${({ $isSun, $isSat, $isEmpty, $isSelected }) =>
     $isEmpty ? 'transparent' :
     $isSelected ? C.navy :
-    $isSun ? '#7EB8D4' : C.white};
+    $isSun ? '#E8816A' :
+    $isSat ? '#7EB8D4' : C.white};
   position: relative;
 
   ${({ $isSelected }) => $isSelected && `

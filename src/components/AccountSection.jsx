@@ -15,11 +15,11 @@ function AccountList({ accounts, showToast }) {
         <AccountTag>{acc.tag}</AccountTag>
         <AccountName>{acc.name}</AccountName>
         <AccountNumber>
-          <AccountBank>{acc.bank}</AccountBank> {acc.number}
+          <AccountBank>{acc.bank}</AccountBank> {atob(acc.number)}
         </AccountNumber>
       </div>
       <CopyButton
-        onClick={() => copyToClipboard(acc.number, () => showToast(`${acc.tag} 계좌번호가 복사되었습니다`))}
+        onClick={() => copyToClipboard(atob(acc.number), () => showToast(`${acc.tag} 계좌번호가 복사되었습니다`))}
         aria-label="복사"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

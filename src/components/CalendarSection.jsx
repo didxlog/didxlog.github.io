@@ -7,7 +7,10 @@ import {
 } from '../styles/styled';
 import { buildCalendar } from '../utils';
 
-const DAY_LABELS = ['S','M','T','W','T','F','S'];
+// 월요일 시작
+const DAY_LABELS = ['월','화','수','목','금','토','일'];
+const IS_SAT = [false, false, false, false, false, true, false];
+const IS_SUN = [false, false, false, false, false, false, true];
 
 export default function CalendarSection() {
   const calRows = buildCalendar();
@@ -20,7 +23,7 @@ export default function CalendarSection() {
       <div style={{ width: '100%', marginTop: '8px' }}>
         <CalDayHeader>
           {DAY_LABELS.map((d, i) => (
-            <CalDayLabel key={i} $isSun={i === 0}>{d}</CalDayLabel>
+            <CalDayLabel key={i} $isSun={IS_SUN[i]} $isSat={IS_SAT[i]}>{d}</CalDayLabel>
           ))}
         </CalDayHeader>
         {calRows.map((row, ri) => (
@@ -29,6 +32,7 @@ export default function CalendarSection() {
               <CalCell
                 key={ci}
                 $isSun={cell.isSun}
+                $isSat={cell.isSat}
                 $isSelected={cell.isSelected}
                 $isEmpty={cell.day === null}
               >
