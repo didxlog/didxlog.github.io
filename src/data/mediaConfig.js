@@ -45,7 +45,7 @@ export const GALLERY_VIDEO = '/media/video.mp4';
 export const TIP_PHOTOS = [
   '/media/tip1.png',
   '/media/tip2.png',
-  '/media/tip3.jpeg',
-  '/media/tip4.png',
+  '/media/tip3.png',
+  '/media/tip4.jpeg',
   '/media/tip5.png',
 ];
