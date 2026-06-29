@@ -43,8 +43,8 @@ export const GALLERY_VIDEO = '/media/video.mp4';
 // ── Tip 섹션 사진 ──
 // 순서대로: [돔형태, 동시예식, ATM위치]
 export const TIP_PHOTOS = [
-  '/media/tip1.jpg',
+  '/media/tip1.png',
   '/media/tip2.png',
-  '/media/tip3.png',
-  '/media/tip4.jpg'
+  '/media/tip4.png',
+  '/media/tip3.jpeg',
 ];
