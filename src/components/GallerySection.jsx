@@ -21,10 +21,20 @@ export default function GallerySection() {
 
   const [expanded,    setExpanded]    = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(null);
-  const [visible,     setVisible]     = useState(true); // 페이드 제어
+  const [visible,     setVisible]     = useState(true);
   const isOpen = lightboxIdx !== null;
 
   const touchStartX = useRef(null);
+  const fadeTimer   = useRef(null);
+
+  // MORE 뒤에 숨겨진 사진 미리 로드
+  useEffect(() => {
+    const hidden = GALLERY_PHOTOS.slice(GALLERY_VISIBLE_COUNT);
+    hidden.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   const visiblePhotos = expanded ? GALLERY_PHOTOS : GALLERY_PHOTOS.slice(0, GALLERY_VISIBLE_COUNT);
   const remainCount   = Math.max(0, total - GALLERY_VISIBLE_COUNT);
@@ -40,8 +50,6 @@ export default function GallerySection() {
   };
 
   // 페이드 아웃 → 인덱스 변경 → 페이드 인
-  const fadeTimer = useRef(null);
-
   const goTo = useCallback((newIdx) => {
     // 이전 타이머 취소
     if (fadeTimer.current) clearTimeout(fadeTimer.current);
