@@ -8,14 +8,10 @@ import {
 } from '../styles/styled';
 import { GALLERY_PHOTOS, GALLERY_VISIBLE_COUNT, GALLERY_VIDEO } from '../data/mediaConfig';
 
-const VW = () => window.innerWidth;
-
-// 이미지 보호 공통 스타일
 const protectedImgStyle = {
   WebkitUserSelect: 'none',
   userSelect: 'none',
   WebkitTouchCallout: 'none',
-  pointerEvents: 'none',
   draggable: false,
 };
 
@@ -25,50 +21,49 @@ export default function GallerySection() {
 
   const [expanded,    setExpanded]    = useState(false);
   const [lightboxIdx, setLightboxIdx] = useState(null);
+  const [visible,     setVisible]     = useState(true); // 페이드 제어
   const isOpen = lightboxIdx !== null;
 
-  const [offset,     setOffset]     = useState(0);
-  const [sliding,    setSliding]    = useState(false);
-  const [displayIdx, setDisplayIdx] = useState(null);
-
   const touchStartX = useRef(null);
-  const isDragging  = useRef(false);
 
   const visiblePhotos = expanded ? GALLERY_PHOTOS : GALLERY_PHOTOS.slice(0, GALLERY_VISIBLE_COUNT);
   const remainCount   = Math.max(0, total - GALLERY_VISIBLE_COUNT);
 
   const openLightbox = (i) => {
     setLightboxIdx(i);
-    setDisplayIdx(i);
-    setOffset(0);
-    setSliding(false);
+    setVisible(true);
   };
 
   const close = () => {
     setLightboxIdx(null);
-    setDisplayIdx(null);
-    setOffset(0);
+    setVisible(true);
   };
 
-  const slideTo = useCallback((direction) => {
-    if (total <= 1) return;
-    const newIdx = direction === 'next'
-      ? (lightboxIdx + 1) % total
-      : (lightboxIdx - 1 + total) % total;
-    const targetOffset = direction === 'next' ? -VW() : VW();
-    setSliding(true);
-    setOffset(targetOffset);
-    setTimeout(() => {
-      setSliding(false);
-      setOffset(0);
+  // 페이드 아웃 → 인덱스 변경 → 페이드 인
+  const fadeTimer = useRef(null);
+
+  const goTo = useCallback((newIdx) => {
+    // 이전 타이머 취소
+    if (fadeTimer.current) clearTimeout(fadeTimer.current);
+    setVisible(false);
+    fadeTimer.current = setTimeout(() => {
       setLightboxIdx(newIdx);
-      setDisplayIdx(newIdx);
-    }, 320);
-  }, [lightboxIdx, total]);
+      setVisible(true);
+      fadeTimer.current = null;
+    }, 200);
+  }, []);
 
-  const prev = useCallback(() => slideTo('prev'), [slideTo]);
-  const next = useCallback(() => slideTo('next'), [slideTo]);
+  const prev = useCallback(() => {
+    if (lightboxIdx === null) return;
+    goTo((lightboxIdx - 1 + total) % total);
+  }, [lightboxIdx, total, goTo]);
 
+  const next = useCallback(() => {
+    if (lightboxIdx === null) return;
+    goTo((lightboxIdx + 1) % total);
+  }, [lightboxIdx, total, goTo]);
+
+  // 키보드
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e) => {
@@ -80,35 +75,23 @@ export default function GallerySection() {
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, prev, next]);
 
+  // 스크롤 막기
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  // 스와이프
   const onTouchStart = useCallback((e) => {
-    if (sliding) return;
     touchStartX.current = e.touches[0].clientX;
-    isDragging.current  = true;
-    setSliding(false);
-  }, [sliding]);
-
-  const onTouchMove = useCallback((e) => {
-    if (!isDragging.current || touchStartX.current === null) return;
-    const dx = e.touches[0].clientX - touchStartX.current;
-    setOffset(dx);
   }, []);
 
   const onTouchEnd = useCallback((e) => {
-    if (!isDragging.current) return;
-    isDragging.current = false;
-    const dx = e.changedTouches[0].clientX - (touchStartX.current ?? 0);
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
-    if (Math.abs(dx) > 60) {
+    if (Math.abs(dx) > 50) {
       dx < 0 ? next() : prev();
-    } else {
-      setSliding(true);
-      setOffset(0);
-      setTimeout(() => setSliding(false), 320);
     }
   }, [prev, next]);
 
@@ -164,7 +147,7 @@ export default function GallerySection() {
               style={{ width: '100%', display: 'block' }}
               ref={el => {
                 if (!el) return;
-                const play = () => { el.play().catch(() => {}); };
+                const play = () => el.play().catch(() => {});
                 window.addEventListener('touchstart', play, { once: true });
                 window.addEventListener('click',      play, { once: true });
               }}
@@ -178,21 +161,19 @@ export default function GallerySection() {
         $visible={isOpen}
         onClick={close}
         onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         style={{ overflow: 'hidden' }}
       >
         <LightboxClose onClick={close}>✕</LightboxClose>
 
-        {isOpen && displayIdx !== null && (
+        {isOpen && lightboxIdx !== null && (
           <>
             <LightboxImg
-              src={GALLERY_PHOTOS[displayIdx]}
+              src={GALLERY_PHOTOS[lightboxIdx]}
               alt=""
               draggable={false}
               onContextMenu={e => e.preventDefault()}
-              $offset={offset}
-              $sliding={sliding}
+              $visible={visible}
               onClick={e => e.stopPropagation()}
               style={{ ...protectedImgStyle, pointerEvents: 'auto' }}
             />
@@ -202,7 +183,7 @@ export default function GallerySection() {
                 <LightboxNav $dir="next" onClick={e => { e.stopPropagation(); next(); }}>›</LightboxNav>
               </>
             )}
-            <LightboxCounter>{displayIdx + 1} / {total}</LightboxCounter>
+            <LightboxCounter>{lightboxIdx + 1} / {total}</LightboxCounter>
           </>
         )}
       </LightboxOverlay>

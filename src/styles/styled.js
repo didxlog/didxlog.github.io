@@ -412,8 +412,9 @@ export const LightboxImg = styled.img`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(calc(-50% + ${({ $offset }) => $offset ?? 0}px), -50%);
-  transition: ${({ $sliding }) => $sliding ? 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none'};
+  transform: translate(-50%, -50%);
+  opacity: ${({ $visible }) => $visible ? 1 : 0};
+  transition: opacity 0.25s ease;
 `;
 
 export const LightboxClose = styled.button`
@@ -462,7 +463,25 @@ export const LightboxCounter = styled.p`
   z-index: 501;
 `;
 
-// ─── Location ─────────────────────────────────────────────
+export const LightboxTrack = styled.div`
+  position: absolute;
+  inset: 0;
+  display: flex;
+  will-change: transform;
+  transform: translateX(${({ $offset }) => $offset}px);
+  transition: ${({ $sliding }) =>
+    $sliding ? 'transform 0.32s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none'};
+`;
+
+export const LightboxSlide = styled.div`
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+`;
 export const VenueName = styled.h3`
   font-family: 'Noto Serif KR', serif;
   font-size: 28px;

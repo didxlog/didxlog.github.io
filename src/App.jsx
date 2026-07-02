@@ -26,6 +26,22 @@ export default function App() {
     return () => document.head.removeChild(link);
   }, []);
 
+  // 사파리 핀치줌 / 더블탭줌 방지
+  useEffect(() => {
+    const preventZoom = (e) => {
+      if (e.touches.length > 1) e.preventDefault();
+    };
+    const preventDblTap = (e) => e.preventDefault();
+    document.addEventListener('touchstart', preventZoom, { passive: false });
+    document.addEventListener('touchmove',  preventZoom, { passive: false });
+    document.addEventListener('dblclick',   preventDblTap);
+    return () => {
+      document.removeEventListener('touchstart', preventZoom);
+      document.removeEventListener('touchmove',  preventZoom);
+      document.removeEventListener('dblclick',   preventDblTap);
+    };
+  }, []);
+
   const showToast = (msg) => {
     setToastMsg(msg);
     setToastVisible(true);
