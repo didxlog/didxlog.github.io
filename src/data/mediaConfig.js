@@ -30,7 +30,6 @@ export const GALLERY_PHOTOS = [
   '/media/9.jpg',
   '/media/10.jpg',
   '/media/11.jpg',
-  '/media/12.jpg',
   '/media/13.jpg',
   '/media/14.jpg',
   '/media/15.jpg',
