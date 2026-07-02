@@ -337,7 +337,7 @@ export const GalleryGrid = styled.div`
 `;
 
 export const GalleryCell = styled.div`
-  aspect-ratio: 1;
+  aspect-ratio: 2/3;
   background: ${({ $isMore }) => $isMore ? C.gray : '#0a1520'};
   display: flex;
   align-items: center;
