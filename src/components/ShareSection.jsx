@@ -1,59 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Section, ThinLine, SectionLabel, ShareSubtitle,
   ShareButtonRow, ShareItem, ShareCircle, ShareLabel,
 } from '../styles/styled';
 import { copyToClipboard } from '../utils';
 
-const KAKAO_APP_KEY  = '36bd7ed82531660cde9013ad17b59753';
-const SHARE_URL      = 'https://didxlog.github.io/';
-const SHARE_IMG      = 'https://didxlog.github.io/media/34.jpg';
-const SHARE_TITLE    = '이현우 & 손지수 결혼합니다 💍';
-const SHARE_DESC     = '2027년 2월 21일 일요일 오후 4시 · 여의도 FKI 플라자';
+const SHARE_URL   = 'https://didxlog.github.io/';
+const SHARE_TITLE = '이현우 & 손지수 결혼합니다 💍';
 
 export default function ShareSection({ showToast }) {
 
-  // 카카오 SDK 로드
-  useEffect(() => {
-    if (document.getElementById('kakao-sdk')) return;
-    const script = document.createElement('script');
-    script.id  = 'kakao-sdk';
-    script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
-    script.onload = () => {
-      if (!window.Kakao.isInitialized()) {
-        window.Kakao.init(KAKAO_APP_KEY);
-      }
-    };
-    document.head.appendChild(script);
-  }, []);
-
-  const handleKakaoShare = () => {
-    if (!window.Kakao?.isInitialized()) return;
-    window.Kakao.Share.sendDefault({
-      objectType: 'feed',
-      content: {
-        title:       SHARE_TITLE,
-        description: SHARE_DESC,
-        imageUrl:    SHARE_IMG,
-        link: {
-          mobileWebUrl: SHARE_URL,
-          webUrl:       SHARE_URL,
-        },
-      },
-      buttons: [
-        {
-          title: '청첩장 보기',
-          link: {
-            mobileWebUrl: SHARE_URL,
-            webUrl:       SHARE_URL,
-          },
-        },
-      ],
-    });
-  };
-
   const handleLinkCopy = () =>
-    copyToClipboard(window.location.href, () => showToast('링크가 복사되었습니다'));
+    copyToClipboard(SHARE_URL, () => showToast('링크가 복사되었습니다'));
 
   const handleNativeShare = () => {
     if (navigator.share) {
@@ -67,16 +25,6 @@ export default function ShareSection({ showToast }) {
       <SectionLabel>Share</SectionLabel>
       <ShareSubtitle>소중한 분들에게 전해주세요</ShareSubtitle>
       <ShareButtonRow>
-
-        {/* 카카오 */}
-        <ShareItem>
-          <ShareCircle aria-label="카카오 공유" onClick={handleKakaoShare}>
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 3C6.48 3 2 6.58 2 11c0 2.77 1.63 5.22 4.1 6.73L5 21l4.3-2.27c.87.17 1.76.27 2.7.27 5.52 0 10-3.58 10-8S17.52 3 12 3z"/>
-            </svg>
-          </ShareCircle>
-          <ShareLabel>KAKAO</ShareLabel>
-        </ShareItem>
 
         {/* 링크 복사 */}
         <ShareItem>
