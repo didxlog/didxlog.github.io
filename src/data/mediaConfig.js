@@ -7,7 +7,7 @@
 
 // ── 히어로 사진 (세로 3:4 비율 권장, 흑백 처리됨) ──
 // null 이면 PHOTO 플레이스홀더로 표시
-export const HERO_PHOTO = '/media/hero.jpg';
+export const HERO_PHOTO = '/media/hero.webp';
 export const HERO_VIDEO = null;
 export const GALLERY_VIDEO_POSTER = null;
 
@@ -19,45 +19,45 @@ export const GALLERY_VIDEO_POSTER = null;
 // ── 갤러리 사진 목록 (순서대로 표시, 최대 5장 + 나머지는 +N으로) ──
 // 빈 배열이면 플레이스홀더로 표시
 export const GALLERY_PHOTOS = [
-  '/media/1.jpg',
-  '/media/2.jpg',
-  '/media/3.jpg',
-  '/media/4.jpg',
-  '/media/5.jpg',
-  '/media/6.jpg',
-  '/media/7.jpg',
-  '/media/8.jpg',
-  '/media/9.jpg',
-  '/media/10.jpg',
-  '/media/11.jpg',
-  '/media/13.jpg',
-  '/media/14.jpg',
-  '/media/15.jpg',
-  '/media/16.jpg',
-  '/media/17.jpg',
-  '/media/18.jpg',
-  '/media/19.jpg',
-  '/media/20.jpg',
-  '/media/21.jpg',
-  '/media/22.jpg',
-  '/media/23.jpg',
-  '/media/24.jpg',
-  '/media/25.jpg',
-  '/media/26.jpg',
-  '/media/27.jpg',
-  '/media/28.jpg',
-  '/media/29.jpg',
-  '/media/30.jpg',
-  '/media/31.jpg',
-  '/media/32.jpg',
-  '/media/33.jpg',
-  '/media/34.jpg',
-  '/media/35.jpg',
-  '/media/36.jpg',
-  '/media/37.jpg',
-  '/media/38.jpg',
-  '/media/39.jpg',
-  '/media/40.jpg',
+  '/media/1.webp',
+  '/media/2.webp',
+  '/media/3.webp',
+  '/media/4.webp',
+  '/media/5.webp',
+  '/media/6.webp',
+  '/media/7.webp',
+  '/media/8.webp',
+  '/media/9.webp',
+  '/media/10.webp',
+  '/media/11.webp',
+  '/media/13.webp',
+  '/media/14.webp',
+  '/media/15.webp',
+  '/media/16.webp',
+  '/media/17.webp',
+  '/media/18.webp',
+  '/media/19.webp',
+  '/media/20.webp',
+  '/media/21.webp',
+  '/media/22.webp',
+  '/media/23.webp',
+  '/media/24.webp',
+  '/media/25.webp',
+  '/media/26.webp',
+  '/media/27.webp',
+  '/media/28.webp',
+  '/media/29.webp',
+  '/media/30.webp',
+  '/media/31.webp',
+  '/media/32.webp',
+  '/media/33.webp',
+  '/media/34.webp',
+  '/media/35.webp',
+  '/media/36.webp',
+  '/media/37.webp',
+  '/media/38.webp',
+  '/media/39.webp',
+  '/media/40.webp',
 ];
 
 // ── 갤러리에서 한 번에 보여줄 셀 수 (나머지는 +N) ──
@@ -71,9 +71,9 @@ export const GALLERY_VIDEO = null;
 // ── Tip 섹션 사진 ──
 // 순서대로: [돔형태, 동시예식, ATM위치]
 export const TIP_PHOTOS = [
-  '/media/tip1.png',
-  '/media/tip2.png',
-  '/media/tip3.png',
-  '/media/tip4.jpeg',
-  '/media/tip5.png',
+  '/media/tip1.webp',
+  '/media/tip2.webp',
+  '/media/tip3.webp',
+  '/media/tip4.webp',
+  '/media/tip5.webp',
 ];
