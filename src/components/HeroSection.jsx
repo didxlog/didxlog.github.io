@@ -15,7 +15,7 @@ export default function HeroSection() {
         <HeroNameGroom>HYEONWOO</HeroNameGroom>
         <HeroAnd>&amp;</HeroAnd>
         <HeroNameBride>JISU</HeroNameBride>
-        <HeroDate>2027.02.21 오후 4시</HeroDate>
+        <HeroDate>2027.02.21 일요일 오후 4시</HeroDate>
         <HeroVenue>여의도 FKI 플라자 1층</HeroVenue>
       </HeroTop>
 
