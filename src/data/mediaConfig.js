@@ -19,17 +19,16 @@ export const GALLERY_VIDEO_POSTER = null;
 // ── 갤러리 사진 목록 (순서대로 표시, 최대 5장 + 나머지는 +N으로) ──
 // 빈 배열이면 플레이스홀더로 표시
 export const GALLERY_PHOTOS = [
+  '/media/7.webp',
+  '/media/8.webp',
+  '/media/9.webp',
   '/media/1.webp',
   '/media/2.webp',
   '/media/3.webp',
   '/media/4.webp',
   '/media/5.webp',
   '/media/6.webp',
-  '/media/7.webp',
-  '/media/8.webp',
-  '/media/9.webp',
   '/media/10.webp',
-  '/media/11.webp',
   '/media/13.webp',
   '/media/14.webp',
   '/media/15.webp',
@@ -45,19 +44,7 @@ export const GALLERY_PHOTOS = [
   '/media/25.webp',
   '/media/26.webp',
   '/media/27.webp',
-  '/media/28.webp',
-  '/media/29.webp',
-  '/media/30.webp',
-  '/media/31.webp',
-  '/media/32.webp',
-  '/media/33.webp',
-  '/media/34.webp',
-  '/media/35.webp',
-  '/media/36.webp',
-  '/media/37.webp',
-  '/media/38.webp',
-  '/media/39.webp',
-  '/media/40.webp',
+  '/media/28.webp'
 ];
 
 // ── 갤러리에서 한 번에 보여줄 셀 수 (나머지는 +N) ──
