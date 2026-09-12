@@ -7,7 +7,7 @@ export const groomAccounts = [
 
 export const brideAccounts = [
   { tag: '신부',       name: '손지수', bank: '신한은행', number: 'MTEwLTQxMC04MjMzMjA=' },
-  { tag: '신부 아버지', name: '손무성', bank: '국민은행', number: 'NDA5MTAyLTk0LTEyMzU2NQ==' },
+  { tag: '신부 아버지', name: '손무성', bank: '국민은행', number: 'NDU2NzAxLTAxLTAyMTE5NA==' },
   { tag: '신부 어머니', name: '곽정애', bank: '신한은행', number: 'MTEwLTI5My04MDUxMjI=' },
 ];
 
