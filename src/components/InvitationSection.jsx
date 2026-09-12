@@ -45,7 +45,7 @@ export function InvitationSection() {
       </svg>
 
       <InvitationText>
-        한 해의 가장 큰 보름달이 뜨는 날 결혼합니다.<br /><br />
+        한 해의 가장 큰 보름달이 뜨는 날 결혼합니다.<br /><br/>
         달처럼 둥글게 살겠습니다.<br /><br />
         함께 자리하시어<br />
         축복해주시면 감사하겠습니다.<br />
