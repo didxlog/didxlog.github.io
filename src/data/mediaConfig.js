@@ -31,7 +31,6 @@ export const GALLERY_PHOTOS = [
   '/media/10.webp',
   '/media/13.webp',
   '/media/14.webp',
-  '/media/15.webp',
   '/media/16.webp',
   '/media/17.webp',
   '/media/18.webp',
@@ -44,7 +43,14 @@ export const GALLERY_PHOTOS = [
   '/media/25.webp',
   '/media/26.webp',
   '/media/27.webp',
-  '/media/28.webp'
+  '/media/101.webp',
+  '/media/103.webp',
+  '/media/104.webp',
+  '/media/105.webp',
+  '/media/106.webp',
+  '/media/107.webp',
+  '/media/108.webp',
+  '/media/109.webp',
 ];
 
 // ── 갤러리에서 한 번에 보여줄 셀 수 (나머지는 +N) ──
