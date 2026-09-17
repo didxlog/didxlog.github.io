@@ -17,15 +17,6 @@ export default function App() {
   const [toastMsg,    setToastMsg]    = useState('');
   const [toastVisible,setToastVisible]= useState(false);
 
-  // 구글 폰트 로드
-  useEffect(() => {
-    const link = document.createElement('link');
-    link.rel  = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Tenor+Sans&family=Noto+Serif+KR:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap';
-    document.head.appendChild(link);
-    return () => document.head.removeChild(link);
-  }, []);
-
   // 사파리 핀치줌 / 더블탭줌 방지
   useEffect(() => {
     const preventZoom = (e) => {
