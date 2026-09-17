@@ -8,6 +8,49 @@ import {
 
 const KAKAO_APP_KEY = '36bd7ed82531660cde9013ad17b59753';
 const KEYWORD = 'FKI전경련플라자 웨딩홀';
+const VENUE_NAME = 'FKI 전경련플라자';
+
+// 좌표가 아직 안 구해졌을 때 쓸 기본값 (여의도 FKI플라자 근사치, 필요시 실제값으로 교체)
+const FALLBACK_LAT = 37.5219;
+const FALLBACK_LNG = 126.9245;
+
+const NAVER_WEB_URL  = 'https://naver.me/5bVYDg0d';
+const KAKAO_WEB_URL  = 'https://kko.to/NJkVWWEW-w';
+
+function isIOS()      { return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
+function isAndroid()  { return /Android/i.test(navigator.userAgent); }
+function isMobile()   { return isIOS() || isAndroid(); }
+
+function tryOpenApp(appUrl, webUrl) {
+  if (!isMobile()) {
+    window.open(webUrl, '_blank');
+    return;
+  }
+  const start = Date.now();
+  // 앱 스킴 호출
+  window.location.href = appUrl;
+  // 일정 시간 안에 페이지를 벗어나지 못했다면(=앱이 없어서 실패) 웹으로 폴백
+  setTimeout(() => {
+    if (Date.now() - start < 2000 && document.visibilityState === 'visible') {
+      window.location.href = webUrl;
+    }
+  }, 1200);
+}
+
+function openNaverMap({ lat, lng }) {
+  const name = encodeURIComponent(VENUE_NAME);
+  const appUrl = isIOS()
+    ? `nmap://place?lat=${lat}&lng=${lng}&name=${name}&appname=${encodeURIComponent(window.location.href)}`
+    : `intent://place?lat=${lat}&lng=${lng}&name=${name}#Intent;scheme=nmap;package=com.nhn.android.nmap;end;`;
+  tryOpenApp(appUrl, NAVER_WEB_URL);
+}
+
+function openKakaoMap({ lat, lng }) {
+  const appUrl = isIOS()
+    ? `kakaomap://look?p=${lat},${lng}`
+    : `intent://look?p=${lat},${lng}#Intent;scheme=kakaomap;package=net.daum.android.map;end;`;
+  tryOpenApp(appUrl, KAKAO_WEB_URL);
+}
 
 function renderMap(container, lat, lng) {
   const map = new window.kakao.maps.Map(container, {
@@ -20,45 +63,46 @@ function renderMap(container, lat, lng) {
   marker.setMap(map);
 }
 
-function geocodeAndRender(container) {
+function geocodeAndRender(container, coordsRef) {
   const places = new window.kakao.maps.services.Places();
   places.keywordSearch(KEYWORD, (result, status) => {
     if (status === window.kakao.maps.services.Status.OK) {
-      renderMap(container, result[0].y, result[0].x);
+      const lat = result[0].y;
+      const lng = result[0].x;
+      coordsRef.current = { lat, lng }; // 딥링크용으로 저장
+      renderMap(container, lat, lng);
     }
   });
 }
 
 export default function LocationSection() {
   const mapRef = useRef(null);
+  const coordsRef = useRef({ lat: FALLBACK_LAT, lng: FALLBACK_LNG });
 
   useEffect(() => {
     const container = mapRef.current;
     if (!container) return;
 
-    // SDK + services 라이브러리 포함해서 로드
     const loadSdk = () => {
       if (document.getElementById('kakao-map-sdk')) return;
       const script = document.createElement('script');
       script.id  = 'kakao-map-sdk';
-      // services 라이브러리 추가
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&libraries=services&autoload=false`;
       document.head.appendChild(script);
     };
 
     loadSdk();
 
-    // kakao.maps.Map + services 둘 다 준비될 때까지 폴링
     let timer;
     let attempts = 0;
     const wait = () => {
       attempts++;
       const k = window.kakao;
       if (k?.maps?.Map && k?.maps?.services?.Geocoder) {
-        k.maps.load(() => geocodeAndRender(container));
+        k.maps.load(() => geocodeAndRender(container, coordsRef));
       } else if (k?.maps && typeof k.maps.load === 'function' && !k.maps.Map) {
         k.maps.load(() => {
-          if (k?.maps?.services?.Geocoder) geocodeAndRender(container);
+          if (k?.maps?.services?.Geocoder) geocodeAndRender(container, coordsRef);
         });
       } else if (attempts < 100) {
         timer = setTimeout(wait, 100);
@@ -89,10 +133,10 @@ export default function LocationSection() {
       />
 
       <MapButtonRow>
-        <MapButton href="https://naver.me/5bVYDg0d" target="_blank" rel="noreferrer">
+        <MapButton as="button" onClick={() => openNaverMap(coordsRef.current)}>
           네이버맵 ↗
         </MapButton>
-        <MapButton href="https://kko.to/NJkVWWEW-w" target="_blank" rel="noreferrer">
+        <MapButton as="button" onClick={() => openKakaoMap(coordsRef.current)}>
           카카오맵 ↗
         </MapButton>
       </MapButtonRow>
