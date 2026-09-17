@@ -7,64 +7,7 @@ import {
 } from '../styles/styled';
 
 const KAKAO_APP_KEY = '36bd7ed82531660cde9013ad17b59753';
-const KEYWORD = 'FKI전경련플라자 웨딩홀';   // 카카오 Places 검색용
-const NAVER_VENUE_NAME = 'FKI플라자';        // 네이버 딥링크 표시명
-
-// 좌표가 아직 안 구해졌을 때 쓸 기본값 (여의도 FKI플라자 근사치, 필요시 실제값으로 교체)
-const FALLBACK_LAT = 37.5219;
-const FALLBACK_LNG = 126.9245;
-
-const NAVER_WEB_URL  = 'https://naver.me/5bVYDg0d';
-const KAKAO_WEB_URL  = 'https://kko.to/NJkVWWEW-w';
-
-function isIOS()      { return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
-function isAndroid()  { return /Android/i.test(navigator.userAgent); }
-function isMobile()   { return isIOS() || isAndroid(); }
-
-function tryOpenApp(appUrl, webUrl) {
-  if (!isMobile()) {
-    window.open(webUrl, '_blank');
-    return;
-  }
-
-  let appOpened = false;
-
-  const onVisibilityChange = () => {
-    // 페이지가 한 번이라도 숨겨졌다면 = 앱으로 전환된 것으로 간주
-    if (document.hidden) appOpened = true;
-  };
-  const onPageHide = () => { appOpened = true; };
-
-  document.addEventListener('visibilitychange', onVisibilityChange);
-  window.addEventListener('pagehide', onPageHide);
-
-  window.location.href = appUrl;
-
-  setTimeout(() => {
-    document.removeEventListener('visibilitychange', onVisibilityChange);
-    window.removeEventListener('pagehide', onPageHide);
-
-    // 그 사이에 한 번도 안 숨겨졌으면 = 진짜로 앱이 없어서 안 열린 것 → 그때만 웹으로 폴백
-    if (!appOpened) {
-      window.location.href = webUrl;
-    }
-  }, 1500);
-}
-
-function openNaverMap({ lat, lng }) {
-  const name = encodeURIComponent(NAVER_VENUE_NAME);
-  const appUrl = isIOS()
-    ? `nmap://place?lat=${lat}&lng=${lng}&name=${name}&appname=${encodeURIComponent(window.location.href)}`
-    : `intent://place?lat=${lat}&lng=${lng}&name=${name}#Intent;scheme=nmap;package=com.nhn.android.nmap;end;`;
-  tryOpenApp(appUrl, NAVER_WEB_URL);
-}
-
-function openKakaoMap({ lat, lng }) {
-  const appUrl = isIOS()
-    ? `kakaomap://look?p=${lat},${lng}`
-    : `intent://look?p=${lat},${lng}#Intent;scheme=kakaomap;package=net.daum.android.map;end;`;
-  tryOpenApp(appUrl, KAKAO_WEB_URL);
-}
+const KEYWORD = 'FKI전경련플라자 웨딩홀';
 
 function renderMap(container, lat, lng) {
   const map = new window.kakao.maps.Map(container, {
@@ -77,46 +20,45 @@ function renderMap(container, lat, lng) {
   marker.setMap(map);
 }
 
-function geocodeAndRender(container, coordsRef) {
+function geocodeAndRender(container) {
   const places = new window.kakao.maps.services.Places();
   places.keywordSearch(KEYWORD, (result, status) => {
     if (status === window.kakao.maps.services.Status.OK) {
-      const lat = result[0].y;
-      const lng = result[0].x;
-      coordsRef.current = { lat, lng }; // 딥링크용으로 저장
-      renderMap(container, lat, lng);
+      renderMap(container, result[0].y, result[0].x);
     }
   });
 }
 
 export default function LocationSection() {
   const mapRef = useRef(null);
-  const coordsRef = useRef({ lat: FALLBACK_LAT, lng: FALLBACK_LNG });
 
   useEffect(() => {
     const container = mapRef.current;
     if (!container) return;
 
+    // SDK + services 라이브러리 포함해서 로드
     const loadSdk = () => {
       if (document.getElementById('kakao-map-sdk')) return;
       const script = document.createElement('script');
       script.id  = 'kakao-map-sdk';
+      // services 라이브러리 추가
       script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&libraries=services&autoload=false`;
       document.head.appendChild(script);
     };
 
     loadSdk();
 
+    // kakao.maps.Map + services 둘 다 준비될 때까지 폴링
     let timer;
     let attempts = 0;
     const wait = () => {
       attempts++;
       const k = window.kakao;
       if (k?.maps?.Map && k?.maps?.services?.Geocoder) {
-        k.maps.load(() => geocodeAndRender(container, coordsRef));
+        k.maps.load(() => geocodeAndRender(container));
       } else if (k?.maps && typeof k.maps.load === 'function' && !k.maps.Map) {
         k.maps.load(() => {
-          if (k?.maps?.services?.Geocoder) geocodeAndRender(container, coordsRef);
+          if (k?.maps?.services?.Geocoder) geocodeAndRender(container);
         });
       } else if (attempts < 100) {
         timer = setTimeout(wait, 100);
@@ -147,10 +89,10 @@ export default function LocationSection() {
       />
 
       <MapButtonRow>
-        <MapButton as="button" onClick={() => openNaverMap(coordsRef.current)}>
+        <MapButton href="https://naver.me/5bVYDg0d" target="_blank" rel="noreferrer">
           네이버맵 ↗
         </MapButton>
-        <MapButton as="button" onClick={() => openKakaoMap(coordsRef.current)}>
+        <MapButton href="https://kko.to/NJkVWWEW-w" target="_blank" rel="noreferrer">
           카카오맵 ↗
         </MapButton>
       </MapButtonRow>
