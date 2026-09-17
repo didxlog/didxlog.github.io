@@ -26,15 +26,29 @@ function tryOpenApp(appUrl, webUrl) {
     window.open(webUrl, '_blank');
     return;
   }
-  const start = Date.now();
-  // 앱 스킴 호출
+
+  let appOpened = false;
+
+  const onVisibilityChange = () => {
+    // 페이지가 한 번이라도 숨겨졌다면 = 앱으로 전환된 것으로 간주
+    if (document.hidden) appOpened = true;
+  };
+  const onPageHide = () => { appOpened = true; };
+
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  window.addEventListener('pagehide', onPageHide);
+
   window.location.href = appUrl;
-  // 일정 시간 안에 페이지를 벗어나지 못했다면(=앱이 없어서 실패) 웹으로 폴백
+
   setTimeout(() => {
-    if (Date.now() - start < 2000 && document.visibilityState === 'visible') {
+    document.removeEventListener('visibilitychange', onVisibilityChange);
+    window.removeEventListener('pagehide', onPageHide);
+
+    // 그 사이에 한 번도 안 숨겨졌으면 = 진짜로 앱이 없어서 안 열린 것 → 그때만 웹으로 폴백
+    if (!appOpened) {
       window.location.href = webUrl;
     }
-  }, 1200);
+  }, 1500);
 }
 
 function openNaverMap({ lat, lng }) {
