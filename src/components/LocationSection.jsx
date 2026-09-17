@@ -7,8 +7,8 @@ import {
 } from '../styles/styled';
 
 const KAKAO_APP_KEY = '36bd7ed82531660cde9013ad17b59753';
-const KEYWORD = 'FKI전경련플라자 웨딩홀';
-const VENUE_NAME = 'FKI 전경련플라자';
+const KEYWORD = 'FKI전경련플라자 웨딩홀';   // 카카오 Places 검색용
+const NAVER_VENUE_NAME = 'FKI플라자';        // 네이버 딥링크 표시명
 
 // 좌표가 아직 안 구해졌을 때 쓸 기본값 (여의도 FKI플라자 근사치, 필요시 실제값으로 교체)
 const FALLBACK_LAT = 37.5219;
@@ -38,7 +38,7 @@ function tryOpenApp(appUrl, webUrl) {
 }
 
 function openNaverMap({ lat, lng }) {
-  const name = encodeURIComponent(VENUE_NAME);
+  const name = encodeURIComponent(NAVER_VENUE_NAME);
   const appUrl = isIOS()
     ? `nmap://place?lat=${lat}&lng=${lng}&name=${name}&appname=${encodeURIComponent(window.location.href)}`
     : `intent://place?lat=${lat}&lng=${lng}&name=${name}#Intent;scheme=nmap;package=com.nhn.android.nmap;end;`;
