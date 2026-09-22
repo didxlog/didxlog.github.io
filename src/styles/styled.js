@@ -150,7 +150,7 @@ export const HeroNameBride = styled.h1`
 `;
 
 export const HeroDate = styled.p`
-  font-family: 'Playfair Display', serif;
+  font-family: 'Noto Serif KR', serif;
   font-size: 22px;
   color: ${C.white};
   letter-spacing: 0.06em;
